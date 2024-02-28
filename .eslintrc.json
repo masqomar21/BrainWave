@@ -6,20 +6,17 @@
         "jsx": true
       }
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime"],
     "plugins": ["react"],
     "rules": {
-      // Add your ESLint rules here
-      // Example rules:
       "react/jsx-indent" : ["error",4],
       "react/jsx-indent-props" : ["error", 4],
       "react/jsx-fragments": "error",
       "indent": "error",
-      // "@typescript-eslint/indent": "error",
-      // "@typescript-eslint/explicit-function-return-type": "off",
-      "react/react-in-jsx-scope": "off",
-      // "react-hooks/rules-of-hooks": "error",
-      // "react-hooks/exhaustive-deps": "warn"
+      "react/react-in-jsx-scope": "error",
+      "react/prop-types" : "off",
+      "no-unused-vars": "off",
+      "no-undef": "off"
     },
     "settings": {
       "react": {

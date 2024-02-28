@@ -1,16 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import Navigation from './src/navigation/naviagtion';
+
 
 export default function App() {
-    return (
-        <>
-            <StatusBar style='auto' backgroundColor='green' />
-            <View className = "mx-auto">
-                <Text>ini tets ini test test</Text>
-                
 
-            </View>
-        </>
+    return (
+        <NavigationContainer>
+            <Navigation />
+        </NavigationContainer>
+        
     );
 }
 
