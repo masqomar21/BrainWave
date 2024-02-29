@@ -25,9 +25,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "webpack": {
-      "config": "@expo/webpack-config"
     }
+    // "webpack": {
+    //   "config": "@expo/webpack-config"
+    // }
   }
 }
