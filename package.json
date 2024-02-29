@@ -9,7 +9,6 @@
     "web": "expo start --web",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
-
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.12",
