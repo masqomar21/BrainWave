@@ -1,11 +1,23 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import {
+  View, Text, Button, Image
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import HeaderWithBack from '../components/HeaderWithBack'
 
-export default function NewRecordScreen() {
+const test = require('../../assets/test.png')
+
+export default function NewRecordScreen({ navigation }) {
 
   return (
-      <View>
+      <SafeAreaView className="flex-1">
+          <HeaderWithBack title="New Record" navigation={navigation} />
+          <Button title="goback" onPress={() => navigation.goBack()} />
           <Text>New Record screen</Text>
-      </View>
+
+          <Image source={test} className="w-20 h-20" />
+
+          <Button title="go to record history" onPress={() => navigation.navigate('RecordeHitory')} />
+      </SafeAreaView>
   )
 }

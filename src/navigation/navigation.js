@@ -2,17 +2,22 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+import { NavigationContainer } from '@react-navigation/native'
 import NewRecordScreen from '../screens/NewRecord'
 import HomeScreen from '../screens/Home'
+import RecordeHitory from '../screens/RecordeHitory'
 
 const Stack = createNativeStackNavigator()
 
 export default function Navigation() {
 
   return (
-      <Stack.Navigator>
-          <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
-          <Stack.Screen name="NewRecord" options={{ headerTitle: 'New Record' }} component={NewRecordScreen} />
-      </Stack.Navigator>
+      <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="NewRecord" component={NewRecordScreen} />
+              <Stack.Screen name="RecordeHitory" component={RecordeHitory} />
+          </Stack.Navigator>
+      </NavigationContainer>
   )
 }
