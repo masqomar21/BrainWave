@@ -117,7 +117,19 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           <View className=" flex-1 py-12">
-              <View className="w-full  bg-white rounded-xl p-5">
+              <View
+                  className="w-full  bg-white rounded-xl p-5"
+                  style={{
+                    shadowColor: '#000000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 6
+                    },
+                    shadowOpacity: 0.26,
+                    shadowRadius: 8,
+                    elevation: 5
+                  }}
+              >
                   <Text className="font-bold text-xl pb-5">Aktivitas Terbaru</Text>
 
                   <ScrollView showsVerticalScrollIndicator={false}>
