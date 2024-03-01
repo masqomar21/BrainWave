@@ -11,18 +11,7 @@
       // "import/no-unresolved": ["error", {"commonjs": true, "caseSensitive": true}],
       "import/no-namespace": "error",
     // "import/no-relative-parent-imports": "error",
-    "import/no-anonymous-default-export": [
-      "error",
-      {
-        "allowArray": true,
-        "allowArrowFunction": false,
-        "allowAnonymousClass": false,
-        "allowAnonymousFunction": false,
-        "allowCallExpression": true, // The true value here is for backward compatibility
-        "allowLiteral": true,
-        "allowObject": true
-      }
-    ],
+  
       "no-use-before-define" : "off",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "linebreak-style": "off",
