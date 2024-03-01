@@ -1,9 +1,8 @@
 import React from 'react'
 import {
-  Text, View, TouchableOpacity, Image
+  Text, View, Image, TouchableWithoutFeedback, Pressable
 } from 'react-native'
-
-const backIcon = require('../../assets/icons/arrowIcon.png')
+import { Entypo } from '@expo/vector-icons'
 
 export default function HeaderWithBack(props) {
   const { navigation, title } = props
@@ -13,10 +12,10 @@ export default function HeaderWithBack(props) {
   }
 
   return (
-      <View className="flex flex-row gap-5 px-5 py-8">
-          <TouchableOpacity onPress={handleBack} className="">
-              <Image source={backIcon} className="w-8 h-8" />
-          </TouchableOpacity>
+      <View className="flex flex-row items-center gap-5 px-5 py-8">
+          <Pressable onPress={handleBack}>
+              <Entypo name="chevron-left" size={24} color="black" />
+          </Pressable>
           <Text className="text-2xl font-bold">
               {title}
           </Text>

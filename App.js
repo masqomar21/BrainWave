@@ -1,5 +1,4 @@
-import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import React, { useEffect } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Navigation from './src/navigation/navigation'
 
