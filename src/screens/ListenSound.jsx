@@ -3,7 +3,7 @@ import {
   View, Text, Image, TouchableOpacity
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Slider from '@react-native-community/slider'
+import Slider from '@candlefinance/slider'
 import HeaderWithBack from '../components/HeaderWithBack'
 
 const ombak = require('../../assets/images/ombak.png')
@@ -124,7 +124,7 @@ export default function ListenSound({ navigation }) {
                                 shadowRadius: 4,
                                 elevation: 3
                               }}
-                              onPress={() => handleSound('api_unggung')}
+                              onPress={() => handleSound('api_unggun')}
                           >
                               <View className="w-full h-32">
                                   <Image source={api} className="w-full h-full" />
@@ -153,13 +153,19 @@ export default function ListenSound({ navigation }) {
                       <Text className="font-bold text-base">Volume</Text>
                   </View>
                   <Slider
-                      // style={{ width: 200, height: 40 }}
-                      className="w-full h-20 bg-red-800"
-                      minimumValue={0}
-                      maximumValue={100}
+                      value={volume}
+                      disabled={false}
+                      min={1}
+                      max={99}
+                      onChange={(value) => {
+                        setVolume(value)
+                      }}
+                      width={300}
+                      height={35}
                       step={1}
-                      minimumTrackTintColor="#FFFFFF"
-                      maximumTrackTintColor="#000000"
+                      showBallIndicator={false}
+                      maximumTrackTintColor="#c7c7c7"
+                      minimumTrackTintColor="#2549A6"
                   />
               </View>
 
