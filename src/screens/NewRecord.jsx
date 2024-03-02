@@ -17,7 +17,7 @@ const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
   const [nama, setNama] = useState('')
-  const [umur, setUmur] = useState(0)
+  const [umur, setUmur] = useState('')
   const [kelamin, setKelamin] = useState(0)
   const kelaminData = ['Laki-laki', 'Perempuan']
   const [sound, setSound] = useState('')
@@ -74,7 +74,7 @@ export default function NewRecordScreen({ navigation }) {
                       <Text className="font-bold text-base mt-3">Umur</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300"
-                          onChangeText={(text) => setUmur(text)}
+                          onChangeText={(value) => setUmur(value)}
                           value={umur}
                           placeholder="Umur"
                           keyboardType="numeric"
