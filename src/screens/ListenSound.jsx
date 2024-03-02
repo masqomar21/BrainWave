@@ -50,7 +50,7 @@ export default function ListenSound({ navigation }) {
                     elevation: 5
                   }}
               >
-                  <Text className="font-bold text-base">Pilih Suaran</Text>
+                  <Text className="font-bold text-base">Pilih Suara</Text>
 
                   <View className="flex w-full gap-3 pt-6">
                       <View className="flex w-full flex-row">

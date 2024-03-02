@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Button, Image, Text, View, TouchableOpacity, ScrollView
+  Image, Text, View, TouchableOpacity, ScrollView
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
