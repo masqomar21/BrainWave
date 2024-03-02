@@ -12,8 +12,8 @@ export default function HeaderWithBack(props) {
   }
 
   return (
-      <View className="flex flex-row items-center gap-5 px-5 py-8">
-          <Pressable onPress={handleBack}>
+      <View className="flex flex-row items-center px-5">
+          <Pressable onPress={handleBack} className="pr-8 py-8">
               <Entypo name="chevron-left" size={24} color="black" />
           </Pressable>
           <Text className="text-2xl font-bold">

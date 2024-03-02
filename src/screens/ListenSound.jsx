@@ -5,6 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@candlefinance/slider'
 import HeaderWithBack from '../components/HeaderWithBack'
+import BtnComp from '../components/Button'
 
 const ombak = require('../../assets/images/ombak.png')
 const hujan = require('../../assets/images/hujan.png')
@@ -14,7 +15,7 @@ const api = require('../../assets/images/api.png')
 export default function ListenSound({ navigation }) {
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
-  const [volume, setVolume] = useState(0)
+  const [volume, setVolume] = useState(20)
 
   const handleSound = (soundType) => {
     setSound(soundType)
@@ -152,21 +153,25 @@ export default function ListenSound({ navigation }) {
                   <View className="w-full pt-7">
                       <Text className="font-bold text-base">Volume</Text>
                   </View>
-                  <Slider
-                      value={volume}
-                      disabled={false}
-                      min={1}
-                      max={99}
-                      onChange={(value) => {
-                        setVolume(value)
-                      }}
-                      width={300}
-                      height={35}
-                      step={1}
-                      showBallIndicator={false}
-                      maximumTrackTintColor="#c7c7c7"
-                      minimumTrackTintColor="#2549A6"
-                  />
+                  <View className="w-full flex items-center">
+                      <Slider
+                          className=""
+                          value={volume}
+                          disabled={false}
+                          min={1}
+                          max={99}
+                          onChange={(value) => {
+                            setVolume(value)
+                          }}
+                          width={320}
+                          height={35}
+                          step={1}
+                          showBallIndicator={false}
+                          maximumTrackTintColor="#c7c7c7"
+                          minimumTrackTintColor="#2549A6"
+                      />
+                  </View>
+                  <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" />
               </View>
 
           </View>
