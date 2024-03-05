@@ -4,14 +4,14 @@
       "sourceType": "module"
     },
     "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "airbnb"],
-    "plugins": ["react", "react-native", "react-hooks", "jsx-a11y", "import"],
+    "plugins": ["react", "react-native", "react-hooks", "jsx-a11y"],
     "rules": {
       "no-duplicate-imports": "error",
       // "import/order": "error",
       // "import/no-unresolved": ["error", {"commonjs": true, "caseSensitive": true}],
-      "import/no-namespace": "error",
+      // "import/no-namespace": "error",
     // "import/no-relative-parent-imports": "error",
-  
+      "import/no-extraneous-dependencies" : "off",
       "no-use-before-define" : "off",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "linebreak-style": "off",
