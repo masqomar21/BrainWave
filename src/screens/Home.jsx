@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
                         shadowRadius: 16,
                         elevation: 24
                       }}
-                      onPress={() => handleNavigation('RecordHitory')}
+                      onPress={() => handleNavigation('RecordHistory')}
                   >
                       <Text className=" font-bold text-xl flex-1">Riwayat Rekaman</Text>
                       <Image source={file} className="w-16 h-16 self-end" />

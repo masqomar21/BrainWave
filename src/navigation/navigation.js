@@ -5,18 +5,20 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
 import NewRecordScreen from '../screens/NewRecord'
 import HomeScreen from '../screens/Home'
-import RecordHitory from '../screens/RecordHitory'
+import RecordHistory from '../screens/RecordHistory'
 import ListenSound from '../screens/ListenSound'
 import AboutApp from '../screens/AboutApp'
+import Detail from '../screens/Detail'
 
 const Stack = createNativeStackNavigator()
 
 const screens = [
   { name: 'Home', component: HomeScreen },
   { name: 'NewRecord', component: NewRecordScreen },
-  { name: 'RecordHitory', component: RecordHitory },
+  { name: 'RecordHistory', component: RecordHistory },
   { name: 'ListenSound', component: ListenSound },
-  { name: 'AboutApp', component: AboutApp }
+  { name: 'AboutApp', component: AboutApp },
+  { name: 'Detail', component: Detail }
 ]
 
 export default function Navigation() {

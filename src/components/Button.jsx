@@ -2,17 +2,19 @@ import React from 'react'
 import {
   Text, TouchableOpacity
 } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
 
 export default function BtnComp(props) {
   const {
-    title, onPress, classComp, fluid
+    title, onPress, classComp, fluid, icon
   } = props
   return (
       <TouchableOpacity
           onPress={onPress}
-          className={`bg-blue-500 p-3 rounded-lg self-center ${classComp} ${fluid ? 'w-full' : 'w-1/2'}`}
+          className={`bg-blue-500 flex flex-row items-center rounded-lg ${classComp} ${fluid ? 'w-full' : 'py-1 px-2'}`}
       >
-          <Text className="text-white text-center font-bold">
+          {icon && <FontAwesome name={icon} size={16} color="white" />}
+          <Text className="text-white text-center font-bold ml-1">
               {title}
           </Text>
       </TouchableOpacity>
