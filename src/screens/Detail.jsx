@@ -1,18 +1,28 @@
 import React from 'react'
 import {
-  ScrollView, Text, TextInput, View
+  ScrollView, Text, TextInput, View, Dimensions
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRoute } from '@react-navigation/native'
+import { LineChart } from 'react-native-chart-kit'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
 
 export default function Detail({ navigation }) {
+  const screenWidth = Dimensions.get('window').width
   const route = useRoute()
   const {
     id, name, age, gender
   } = route.params
 
+  const data = {
+    labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
+      }
+    ]
+  }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Detail Rekaman" navigation={navigation} />
@@ -56,6 +66,29 @@ export default function Detail({ navigation }) {
                           editable={false}
                           selectTextOnFocus={false}
                       />
+                      <View className="mt-5 flex relative">
+                          <LineChart
+                              data={data}
+                              width={screenWidth - 80}
+                              height={200}
+                              xAxisLabel="s"
+                              chartConfig={{
+                                backgroundGradientFrom: '#f0f0f0',
+                                backgroundGradientTo: '#d3d2dd',
+                                decimalPlaces: 0,
+                                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                  borderRadius: 16
+                                }
+                              }}
+                              bezier
+                              style={{
+                                marginVertical: 8,
+                                borderRadius: 16
+                              }}
+                          />
+                      </View>
                   </View>
               </View>
           </ScrollView>
