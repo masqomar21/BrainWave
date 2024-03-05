@@ -30,7 +30,9 @@
       "indent": "error",
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
-      "no-undef": "off"
+      "no-undef": "off",
+      "func-names" : "off",
+      "no-unused-expressions" : "off"
     },
     "settings": {
       // "import/resolver":"my-awesome-npm-module",
