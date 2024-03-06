@@ -171,7 +171,7 @@ export default function ListenSound({ navigation }) {
                           minimumTrackTintColor="#2549A6"
                       />
                   </View>
-                  <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" />
+                  <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" fluid />
               </View>
 
           </View>

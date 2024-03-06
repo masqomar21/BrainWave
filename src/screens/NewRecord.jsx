@@ -222,10 +222,8 @@ export default function NewRecordScreen({ navigation }) {
                               minimumTrackTintColor="#2549A6"
                           />
                       </View>
-                      <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" />
+                      <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" fluid />
                   </View>
-
-                  <BtnComp title="Go to record history" onPress={() => navigation.navigate('RecordHitory')} classComp="bg-blue-500 mt-5" fluid />
               </View>
           </ScrollView>
       </SafeAreaView>
