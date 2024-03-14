@@ -26,6 +26,14 @@ export default function FindDeviceScreen({ navigation }) {
                   <Fontisto name="power" size={100} color="#0047AB" />
               </TouchableOpacity>
 
+              <Text className="text-2xl font-bold text-center text-white mt-10">
+                  Find Device
+              </Text>
+
+              <Text className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+                  sambungkan
+              </Text>
+
           </View>
       </SafeAreaView>
   )

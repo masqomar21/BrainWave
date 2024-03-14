@@ -1,4 +1,4 @@
-package com.afkdev.brainwave
+package com..brainwave
 
 import android.os.Build
 import android.os.Bundle
