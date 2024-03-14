@@ -79,7 +79,7 @@ export default function HomeScreen({ navigation }) {
                   </TouchableOpacity>
               </View>
               <View className="flex w-full flex-row">
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                       className="flex-1 h-32 bg-white flex-row rounded-2xl mr-3 p-3"
                       style={{
                         shadowColor: '#000000',
@@ -95,7 +95,7 @@ export default function HomeScreen({ navigation }) {
                   >
                       <Text className=" font-bold text-xl flex-1">Dengar Suara</Text>
                       <Image source={cloud} className="w-16 h-16 self-end" />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                       className="flex-1 h-32 bg-white flex-row rounded-2xl p-3"
                       style={{

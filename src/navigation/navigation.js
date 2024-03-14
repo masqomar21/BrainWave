@@ -25,7 +25,7 @@ export default function Navigation() {
 
   return (
       <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
               {screens.map((screen, index) => (
                   <Stack.Screen key={index} name={screen.name} component={screen.component} />
               ))}

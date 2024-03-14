@@ -51,7 +51,7 @@ export default function RecordHistory({ navigation }) {
           >
               <BtnComp
                   title="+ Tambah Pengguna"
-                  onPress={() => navigation.navigate('Record')}
+                  onPress={() => navigation.navigate('NewRecord')}
                   classComp="bg-green-500 mt-5 self-start"
               />
               {/* List of user */}
