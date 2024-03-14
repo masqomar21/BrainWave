@@ -11,6 +11,7 @@
       // "import/no-unresolved": ["error", {"commonjs": true, "caseSensitive": true}],
       // "import/no-namespace": "error",
     // "import/no-relative-parent-imports": "error",
+      "react/style-prop-object": "off",
       "import/no-extraneous-dependencies" : "off",
       "no-use-before-define" : "off",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],

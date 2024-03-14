@@ -9,6 +9,9 @@ import RecordHistory from '../screens/RecordHistory'
 import ListenSound from '../screens/ListenSound'
 import AboutApp from '../screens/AboutApp'
 import Detail from '../screens/Detail'
+import FindDeviceScreen from '../screens/FindDeviceScreen'
+
+import useBLE from '../lib/useBle'
 
 const Stack = createNativeStackNavigator()
 
@@ -18,14 +21,18 @@ const screens = [
   { name: 'RecordHistory', component: RecordHistory },
   { name: 'ListenSound', component: ListenSound },
   { name: 'AboutApp', component: AboutApp },
-  { name: 'Detail', component: Detail }
+  { name: 'Detail', component: Detail },
+  { name: 'FindDevice', component: FindDeviceScreen }
 ]
 
 export default function Navigation() {
+  const { connectedDevice } = useBLE()
+  // const initialScreen = 'Home'
+  const initialScreen = connectedDevice ? 'Home' : 'FindDevice'
 
   return (
       <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialScreen}>
               {screens.map((screen, index) => (
                   <Stack.Screen key={index} name={screen.name} component={screen.component} />
               ))}

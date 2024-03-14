@@ -9,10 +9,10 @@ import * as ExpoDevice from 'expo-device'
 import base64 from 'react-native-base64'
 import { CONSOLE } from './log'
 
-const SERVICE_UUID = 'de1bf7ab-1ca8-40a3-b797-6221c2acb33d'
-const CHARACTERISTIC_UUID = '3559f95b-3857-43f1-a7e0-cc0ab0542afc'
+const SERVICE_UUID = process.env.SERVICE_UUID ?? 'de1bf7ab-1ca8-40a3-b797-6221c2acb33d'
+const CHARACTERISTIC_UUID = process.env.CHARACTERISTIC_UUID ?? '3559f95b-3857-43f1-a7e0-cc0ab0542afc'
 
-function useBLE() {
+export default function useBLE() {
   const bleManager = useMemo(() => new BleManager(), [])
   //   const bleManager = useMemo(() => new BleManager(), [])
   const [allDevices, setALlDevices] = useState([])
@@ -179,7 +179,8 @@ function useBLE() {
     connectedDevice,
     disconnecTodDevice,
     rawData,
-    writeData
+    writeData,
+    err
   }
 
 }
