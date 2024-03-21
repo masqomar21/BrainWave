@@ -161,8 +161,8 @@ export default function useBLE() {
   const startStreamingData = async function (device) {
     if (device) {
       device.monitorCharacteristicForService(
-        HEART_RATE_UUID,
-        HEART_RATE_CHARACTERISTIC,
+        SERVICE_UUID,
+        CHARACTERISTIC_UUID,
         readData
       )
     } else {

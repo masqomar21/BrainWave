@@ -26,9 +26,9 @@ const screens = [
 ]
 
 export default function Navigation() {
-  const { connectedDevice } = useBLE()
-  // const initialScreen = 'Home'
-  const initialScreen = connectedDevice ? 'Home' : 'FindDevice'
+  // const { connectedDevice } = useBLE()
+  // const initialScreen = connectedDevice ? 'Home' : 'FindDevice'
+  const initialScreen = 'Home'
 
   return (
       <NavigationContainer>
