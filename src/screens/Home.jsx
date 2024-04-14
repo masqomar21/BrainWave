@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Image, Text, View, TouchableOpacity, ScrollView
 } from 'react-native'
@@ -18,23 +18,37 @@ export default function HomeScreen({ navigation }) {
 
   const data = [
     {
-      title: 'Memutar ombak',
-      Time: '12.00'
+      activity: 'Memutar ombak',
+      time: '12.00'
     },
     {
-      title: 'Memutar ombak',
-      Time: '12.00'
+      activity: 'Memutar ombak',
+      time: '12.00'
     },
     {
-      title: 'Memutar ombak',
-      Time: '12.00'
+      activity: 'Memutar ombak',
+      time: '12.00'
     },
     {
-      title: 'Memutar ombak',
-      Time: '12.00'
+      activity: 'Memutar ombak',
+      time: '12.00'
     }
 
   ]
+
+  const showActivities = () => {
+    return data.map((item, index) => (
+        <View className="flex w-full mb-3" key={index}>
+            <View
+                className="w-full flex-row justify-between items-center rounded-2xl mb-1"
+            >
+                <Text className="text-gray-500 text-xl">{item.activity}</Text>
+                <Text>{item.time}</Text>
+            </View>
+            <View className="w-full self-center border-t border-gray-400" />
+        </View>
+    ))
+  }
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200 p-5 ">
@@ -133,17 +147,7 @@ export default function HomeScreen({ navigation }) {
                   <Text className="font-bold text-xl pb-5">Aktivitas Terbaru</Text>
 
                   <ScrollView showsVerticalScrollIndicator={false}>
-                      {data.map((item, index) => (
-                          <View className="flex w-full mb-3" key={index}>
-                              <View
-                                  className="w-full flex-row justify-between items-center rounded-2xl mb-1"
-                              >
-                                  <Text className="text-gray-500 text-xl">{item.title}</Text>
-                                  <Text>{item.Time}</Text>
-                              </View>
-                              <View className="w-full self-center border-t border-gray-400" />
-                          </View>
-                      ))}
+                      {showActivities()}
                   </ScrollView>
               </View>
           </View>

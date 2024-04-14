@@ -12,7 +12,7 @@ export default function Detail({ navigation }) {
   const screenWidth = Dimensions.get('window').width
   const route = useRoute()
   const {
-    id, name, age, gender
+    id, nama, umur, jenisKelamin
   } = route.params
 
   const data = {
@@ -44,7 +44,7 @@ export default function Detail({ navigation }) {
                       <Text className="font-bold text-base mt-3">Nama</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
-                          value={name}
+                          value={nama}
                           placeholder="Nama"
                           editable={false}
                           selectTextOnFocus={false}
@@ -52,16 +52,16 @@ export default function Detail({ navigation }) {
                       <Text className="font-bold text-base mt-3">Umur</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
-                          value={age.toString()}
+                          value={umur.toString()}
                           placeholder="Umur"
                           keyboardType="numeric"
                           editable={false}
                           selectTextOnFocus={false}
                       />
-                      <Text className="font-bold text-base mt-3">Jeni Kelamin</Text>
+                      <Text className="font-bold text-base mt-3">Jenis Kelamin</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
-                          value={gender}
+                          value={jenisKelamin}
                           placeholder="Umur"
                           editable={false}
                           selectTextOnFocus={false}

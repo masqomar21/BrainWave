@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+/* eslint-disable no-console */
+/* eslint-disable no-underscore-dangle */
+import React, { useState, useEffect } from 'react'
 import {
   View, Text, ScrollView, Image, TouchableOpacity, TextInput
 } from 'react-native'
@@ -6,6 +8,9 @@ import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@candlefinance/slider'
 import SelectDropdown from 'react-native-select-dropdown'
+import * as SQLite from 'expo-sqlite'
+import * as Sharing from 'expo-sharing'
+import * as FileSystem from 'expo-file-system'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 
@@ -16,13 +21,15 @@ const burung = require('../../assets/images/burung.png')
 const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
+  const db = SQLite.openDatabase('example.db')
   const [nama, setNama] = useState('')
   const [umur, setUmur] = useState('')
-  const [kelamin, setKelamin] = useState(0)
+  const [kelamin, setKelamin] = useState('Laki-laki')
   const kelaminData = ['Laki-laki', 'Perempuan']
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
+  const [users, setUsers] = useState([])
 
   const handleSound = (soundType) => {
     setSound(soundType)
@@ -31,11 +38,46 @@ export default function NewRecordScreen({ navigation }) {
   const handleFreq = (freqType) => {
     setFreq(freqType)
   }
+
+  const addRecord = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'INSERT INTO users (nama, umur, jenis_kelamin) VALUES (?, ?, ?)',
+        [nama, umur, kelamin],
+        (txObj, resultSet) => {
+          const existingUsers = resultSet.rows._array
+          existingUsers.push({
+            id: resultSet.insertId, nama, umur, kelamin
+          })
+          setUsers(existingUsers)
+        },
+        (txObj, error) => console.log('Error:', error)
+      )
+    })
+  }
+
+  const exportDb = async () => {
+    await Sharing.shareAsync(`${FileSystem.documentDirectory}SQLite/example.db`)
+  }
+
+  const showUsers = () => {
+    return users.map((item) => {
+      return (
+          <View key={item.id}>
+              <Text>{item.nama}</Text>
+              <Text>{item.umur}</Text>
+              <Text>{item.jenis_kelamin}</Text>
+          </View>
+      )
+    })
+  }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
               <View className="flex-1 px-5">
+                  {showUsers()}
+                  <BtnComp title="Export" onPress={() => exportDb()} classComp="bg-blue-500" fluid />
                   <Text className="text-center text-base font-bold">
                       { nama !== '' ? nama : ''}
                       {', '}
@@ -222,7 +264,7 @@ export default function NewRecordScreen({ navigation }) {
                               minimumTrackTintColor="#2549A6"
                           />
                       </View>
-                      <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" fluid />
+                      <BtnComp title="Dengarkan" onPress={() => addRecord()} classComp="bg-green-400 mt-5" fluid />
                   </View>
               </View>
           </ScrollView>
