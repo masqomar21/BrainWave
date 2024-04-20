@@ -21,8 +21,11 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+     
+      "icon": "./assets/icon.png",
+      "SplashScreen": {
+        "image": "./assets/SplashScreen.png",
+        "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
