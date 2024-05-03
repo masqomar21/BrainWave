@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View, Text, Button, Image, ScrollView
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 
 export default function RecordHistory({ navigation }) {
+  const [usersData, setUsersData] = useState([])
   const data = [
     {
       id: 1,
@@ -33,6 +35,59 @@ export default function RecordHistory({ navigation }) {
       gender: 'Laki-laki'
     }
   ]
+
+  const mappingData = () => {
+    return usersData.map((item, index) => (
+        <View className="flex w-full mb-2" key={index}>
+            <View
+                className="w-full flex-row justify-between items-center rounded-2xl mb-1"
+            >
+                <View className="flex flex-row items-center">
+                    <Text className="text-gray-500 text-xl">{index + 1}</Text>
+                    <Text className="text-gray-500 text-xl ml-3">{item.name}</Text>
+                </View>
+                <View className="flex flex-row">
+                    <BtnComp
+                        title="Detail"
+                        classComp="bg-blue-500 ml-1"
+                        icon="edit"
+                        onPress={() => navigation.navigate(
+                          'Detail',
+                          {
+                            id: item.id,
+                            name: item.name,
+                            age: item.age,
+                            gender: item.gender
+                          }
+                        )}
+                    />
+                    <BtnComp
+                        title="Hapus"
+                        classComp="bg-red-500 ml-1"
+                        icon="trash"
+                        onPress={() => removeUser(index)}
+                    />
+                </View>
+            </View>
+            <View className="w-full self-center border-t border-gray-400" />
+        </View>
+    ))
+  }
+
+  const removeUser = async (index) => {
+    const newData = usersData.filter((item, idx) => idx !== index)
+    await AsyncStorage.setItem('users', JSON.stringify(newData))
+    setUsersData(newData)
+    console.log('Data berhasil dihapus', newData)
+  }
+
+  const readUsersFromStorage = async () => {
+    const item = await AsyncStorage.getItem('users')
+    setUsersData(JSON.parse(item))
+  }
+  useEffect(() => {
+    readUsersFromStorage()
+  }, [])
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Record History" navigation={navigation} />
@@ -57,40 +112,7 @@ export default function RecordHistory({ navigation }) {
               {/* List of user */}
               <View className="mt-5">
                   <ScrollView showsVerticalScrollIndicator={false}>
-                      {data.map((item, index) => (
-                          <View className="flex w-full mb-2" key={index}>
-                              <View
-                                  className="w-full flex-row justify-between items-center rounded-2xl mb-1"
-                              >
-                                  <View className="flex flex-row items-center">
-                                      <Text className="text-gray-500 text-xl">{index + 1}</Text>
-                                      <Text className="text-gray-500 text-xl ml-3">{item.name}</Text>
-                                  </View>
-                                  <View className="flex flex-row">
-                                      <BtnComp
-                                          title="Detail"
-                                          classComp="bg-blue-500 ml-1"
-                                          icon="edit"
-                                          onPress={() => navigation.navigate(
-                                            'Detail',
-                                            {
-                                              id: item.id,
-                                              name: item.name,
-                                              age: item.age,
-                                              gender: item.gender
-                                            }
-                                          )}
-                                      />
-                                      <BtnComp
-                                          title="Hapus"
-                                          classComp="bg-red-500 ml-1"
-                                          icon="trash"
-                                      />
-                                  </View>
-                              </View>
-                              <View className="w-full self-center border-t border-gray-400" />
-                          </View>
-                      ))}
+                      {mappingData()}
                   </ScrollView>
               </View>
           </View>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View, Text, ScrollView, Image, TouchableOpacity, TextInput
 } from 'react-native'
@@ -6,6 +6,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@candlefinance/slider'
 import SelectDropdown from 'react-native-select-dropdown'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 
@@ -16,13 +17,14 @@ const burung = require('../../assets/images/burung.png')
 const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
-  const [nama, setNama] = useState('')
+  const [nama, setNama] = useState('nama')
   const [umur, setUmur] = useState('')
   const [kelamin, setKelamin] = useState(0)
   const kelaminData = ['Laki-laki', 'Perempuan']
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
+  const [usersData, setUsersData] = useState([])
 
   const handleSound = (soundType) => {
     setSound(soundType)
@@ -30,6 +32,42 @@ export default function NewRecordScreen({ navigation }) {
 
   const handleFreq = (freqType) => {
     setFreq(freqType)
+  }
+
+  const storeData = async () => {
+    try {
+      // Retrieve users data from AsyncStorage
+      const usersStorage = await AsyncStorage.getItem('users')
+
+      // Check if usersStorage is not empty
+      if (usersStorage) {
+        setUsersData(JSON.parse(usersStorage))
+      }
+
+      let newId = 1
+
+      // If usersData is not empty, get the last id and add 1
+      if (usersData.length > 0) {
+        newId = usersData[usersData.length - 1].id + 1
+      }
+
+      // Create a new user object
+      const newUser = {
+        id: newId,
+        name: nama,
+        age: umur,
+        gender: kelamin
+      }
+
+      // Add the new user to usersData
+      usersData.push(newUser)
+
+      // Save updated usersData to AsyncStorage
+      await AsyncStorage.setItem('users', JSON.stringify(usersData))
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
@@ -222,7 +260,7 @@ export default function NewRecordScreen({ navigation }) {
                               minimumTrackTintColor="#2549A6"
                           />
                       </View>
-                      <BtnComp title="Dengarkan" onPress={() => {}} classComp="bg-green-400 mt-5" fluid />
+                      <BtnComp title="Dengarkan" onPress={() => storeData()} classComp="bg-green-400 mt-5" fluid />
                   </View>
               </View>
           </ScrollView>
