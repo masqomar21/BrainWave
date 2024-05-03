@@ -3,6 +3,8 @@ import {
   Image, Text, View, TouchableOpacity, ScrollView
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import BtnComp from '../components/Button'
 
 const test = require('../../assets/test.png')
 
@@ -35,6 +37,16 @@ export default function HomeScreen({ navigation }) {
     }
 
   ]
+
+  const deleteAllDatas = async () => {
+    const keys = ['users', 'records']
+    try {
+      await AsyncStorage.multiRemove(keys)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
+  }
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200 p-5 ">
@@ -79,23 +91,6 @@ export default function HomeScreen({ navigation }) {
                   </TouchableOpacity>
               </View>
               <View className="flex w-full flex-row">
-                  {/* <TouchableOpacity
-                      className="flex-1 h-32 bg-white flex-row rounded-2xl mr-3 p-3"
-                      style={{
-                        shadowColor: '#000000',
-                        shadowOffset: {
-                          width: 0,
-                          height: 12
-                        },
-                        shadowOpacity: 0.58,
-                        shadowRadius: 16,
-                        elevation: 24
-                      }}
-                      onPress={() => handleNavigation('ListenSound')}
-                  >
-                      <Text className=" font-bold text-xl flex-1">Dengar Suara</Text>
-                      <Image source={cloud} className="w-16 h-16 self-end" />
-                  </TouchableOpacity> */}
                   <TouchableOpacity
                       className="flex-1 h-32 bg-white flex-row rounded-2xl p-3"
                       style={{
@@ -146,6 +141,12 @@ export default function HomeScreen({ navigation }) {
                       ))}
                   </ScrollView>
               </View>
+              <BtnComp
+                  title="Reset Data"
+                  onPress={() => deleteAllDatas()}
+                  classComp="bg-red-400 mt-5"
+                  fluid
+              />
           </View>
       </SafeAreaView>
   )
