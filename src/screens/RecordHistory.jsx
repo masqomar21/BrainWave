@@ -112,7 +112,7 @@ export default function RecordHistory({ navigation }) {
               {/* List of user */}
               <View className="mt-5">
                   <ScrollView showsVerticalScrollIndicator={false}>
-                      {mappingData()}
+                      { usersData?.length ? mappingData() : <Text className="text-center text-gray-500">Data tidak ditemukan</Text>}
                   </ScrollView>
               </View>
           </View>
