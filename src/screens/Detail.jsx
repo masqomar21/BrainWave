@@ -1,28 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ScrollView, Text, TextInput, View, Dimensions
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRoute } from '@react-navigation/native'
 import { LineChart } from 'react-native-chart-kit'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
 
 export default function Detail({ navigation }) {
   const screenWidth = Dimensions.get('window').width
+  const [records, setRecordsData] = useState([])
   const route = useRoute()
   const {
     id, name, age, gender
   } = route.params
 
   const data = {
-    labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    // labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
     datasets: [
       {
         data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
       }
     ]
   }
+
+  const readRecordsFromStorage = async () => {
+    const items = await AsyncStorage.getItem('records')
+    setRecordsData(JSON.parse(items))
+  }
+
+  useEffect(() => {
+    readRecordsFromStorage()
+  }, [route])
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Detail Rekaman" navigation={navigation} />
@@ -41,7 +52,8 @@ export default function Detail({ navigation }) {
                         elevation: 5
                       }}
                   >
-                      <Text className="font-bold text-base mt-3">Nama</Text>
+
+                      <Text className="font-bold text-base mt-3">{JSON.stringify(records)}</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
                           value={name}
@@ -65,6 +77,20 @@ export default function Detail({ navigation }) {
                           placeholder="Umur"
                           editable={false}
                           selectTextOnFocus={false}
+                      />
+                      <BtnComp
+                          title="Record"
+                          onPress={() => navigation.navigate(
+                            'ListenSound',
+                            {
+                              id,
+                              name,
+                              age,
+                              gender
+                            }
+                          )}
+                          classComp="bg-green-400 mt-5"
+                          fluid
                       />
                       <View className="mt-5 flex relative">
                           <LineChart

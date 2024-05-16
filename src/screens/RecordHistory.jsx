@@ -9,81 +9,57 @@ import BtnComp from '../components/Button'
 
 export default function RecordHistory({ navigation }) {
   const [usersData, setUsersData] = useState([])
-  const data = [
-    {
-      id: 1,
-      name: 'Lucky',
-      age: 300,
-      gender: 'Perempuan'
-    },
-    {
-      id: 2,
-      name: 'Adelia',
-      age: 400,
-      gender: 'Perempuan'
-    },
-    {
-      id: 3,
-      name: 'Azdni',
-      age: 500,
-      gender: 'Perempuan'
-    },
-    {
-      id: 4,
-      name: 'Udin',
-      age: 5000,
-      gender: 'Laki-laki'
-    }
-  ]
 
   const mappingData = () => {
-    return usersData.map((item, index) => (
-        <View className="flex w-full mb-2" key={index}>
-            <View
-                className="w-full flex-row justify-between items-center rounded-2xl mb-1"
-            >
-                <View className="flex flex-row items-center">
-                    <Text className="text-gray-500 text-xl">{index + 1}</Text>
-                    <Text className="text-gray-500 text-xl ml-3">{item.name}</Text>
-                </View>
-                <View className="flex flex-row">
-                    <BtnComp
-                        title="Detail"
-                        classComp="bg-blue-500 ml-1"
-                        icon="edit"
-                        onPress={() => navigation.navigate(
-                          'Detail',
-                          {
-                            id: item.id,
-                            name: item.name,
-                            age: item.age,
-                            gender: item.gender
-                          }
-                        )}
-                    />
-                    <BtnComp
-                        title="Hapus"
-                        classComp="bg-red-500 ml-1"
-                        icon="trash"
-                        onPress={() => removeUser(index)}
-                    />
-                </View>
-            </View>
-            <View className="w-full self-center border-t border-gray-400" />
-        </View>
-    ))
+    if (usersData) {
+      return usersData.map((item, index) => (
+          <View className="flex w-full mb-2" key={index}>
+              <View
+                  className="w-full flex-row justify-between items-center rounded-2xl mb-1"
+              >
+                  <View className="flex flex-row items-center">
+                      <Text className="text-gray-500 text-xl">{index + 1}</Text>
+                      <Text className="text-gray-500 text-xl ml-3">{item.name}</Text>
+                  </View>
+                  <View className="flex flex-row">
+                      <BtnComp
+                          title="Detail"
+                          classComp="bg-blue-500 ml-1"
+                          icon="edit"
+                          onPress={() => navigation.navigate(
+                            'Detail',
+                            {
+                              id: item.id,
+                              name: item.name,
+                              age: item.age,
+                              gender: item.gender
+                            }
+                          )}
+                      />
+                      <BtnComp
+                          title="Hapus"
+                          classComp="bg-red-500 ml-1"
+                          icon="trash"
+                          onPress={() => removeUser(index)}
+                      />
+                  </View>
+              </View>
+              <View className="w-full self-center border-t border-gray-400" />
+          </View>
+      ))
+    }
+    return null
   }
 
   const removeUser = async (index) => {
     const newData = usersData.filter((item, idx) => idx !== index)
     await AsyncStorage.setItem('users', JSON.stringify(newData))
     setUsersData(newData)
-    console.log('Data berhasil dihapus', newData)
   }
 
   const readUsersFromStorage = async () => {
-    const item = await AsyncStorage.getItem('users')
-    setUsersData(JSON.parse(item))
+    const users = await AsyncStorage.getItem('users')
+    setUsersData(JSON.parse(users))
   }
   useEffect(() => {
     readUsersFromStorage()
