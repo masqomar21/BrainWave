@@ -75,7 +75,7 @@ export default function Detail({ navigation }) {
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
                           value={gender}
-                          placeholder="Umur"
+                          placeholder="jenis kelamin"
                           editable={false}
                           selectTextOnFocus={false}
                       />

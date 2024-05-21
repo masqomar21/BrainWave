@@ -19,7 +19,7 @@ const api = require('../../assets/images/api.png')
 export default function NewRecordScreen({ navigation }) {
   const [nama, setNama] = useState('nama')
   const [umur, setUmur] = useState('')
-  const [kelamin, setKelamin] = useState(0)
+  const [kelamin, setKelamin] = useState('')
   const kelaminData = ['Laki-laki', 'Perempuan']
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
@@ -38,40 +38,46 @@ export default function NewRecordScreen({ navigation }) {
     try {
       // Retrieve users data from AsyncStorage
       const usersStorage = await AsyncStorage.getItem('users')
-      console.log('user storage', usersStorage)
 
       // Check if usersStorage is not empty
       if (usersStorage) {
-        console.log('masuk', JSON.parse(usersStorage))
         setUsersData(JSON.parse(usersStorage))
       }
 
       let newId = 1
-      console.log(usersData)
 
       // If usersData is not empty, get the last id and add 1
-      if (usersData.length > 0) {
-        newId = usersData[usersData.length - 1].id + 1
-      }
+      setUsersData((prevUsersData) => {
+        // create new id
+        if (prevUsersData.length > 0) {
+          newId = prevUsersData[prevUsersData.length - 1].id + 1
+        }
 
-      // Create a new user object
-      const newUser = {
-        id: newId,
-        name: nama,
-        age: umur,
-        gender: kelamin
-      }
+        // create new user object
+        const newUser = {
+          id: newId,
+          name: nama,
+          age: umur,
+          gender: kelamin
+        }
 
-      // Add the new user to usersData
-      usersData.push(newUser)
-      console.log(usersData)
+        // add new user to usersData
+        const updatedUsersData = [...prevUsersData, newUser]
 
-      // Save updated usersData to AsyncStorage
-      await AsyncStorage.setItem('users', JSON.stringify(usersData))
+        // Save updated usersData to AsyncStorage
+        AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
+
+        // return updated usersData
+        return updatedUsersData
+      })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }
+    // clear form
+    setNama('')
+    setUmur('')
+    setKelamin(0)
   }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
