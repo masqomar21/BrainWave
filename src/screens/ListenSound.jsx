@@ -80,13 +80,13 @@ export default function NewRecordScreen({ navigation }) {
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
               <View className="flex-1 px-5">
-                  <Text className="text-center text-base font-bold">
+                  {/* <Text className="text-center text-base font-bold">
                       { sound !== '' ? sound : 'Pilih Suara'}
                       {' '}
                       { freq !== 0 ? `(${freq} Hz)` : ''}
                       {' '}
                       { volume !== 0 ? `(${volume} %)` : ''}
-                  </Text>
+                  </Text> */}
 
                   <View
                       className="w-full rounded-xl p-5 bg-white"
@@ -128,7 +128,7 @@ export default function NewRecordScreen({ navigation }) {
                       <View className="flex w-full gap-3 pt-6">
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'ombak' ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -147,7 +147,7 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Ombak</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'hujan' ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -168,7 +168,7 @@ export default function NewRecordScreen({ navigation }) {
                           </View>
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'Kicau_burung' ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -187,7 +187,7 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Kicau Burung</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'api_unggun' ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
