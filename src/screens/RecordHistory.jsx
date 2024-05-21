@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 
@@ -61,9 +62,14 @@ export default function RecordHistory({ navigation }) {
     const users = await AsyncStorage.getItem('users')
     setUsersData(JSON.parse(users))
   }
-  useEffect(() => {
-    readUsersFromStorage()
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      readUsersFromStorage()
+    }, [])
+  )
+  // useEffect(() => {
+  //   readUsersFromStorage()
+  // }, [])
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Record History" navigation={navigation} />

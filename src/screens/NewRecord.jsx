@@ -38,13 +38,16 @@ export default function NewRecordScreen({ navigation }) {
     try {
       // Retrieve users data from AsyncStorage
       const usersStorage = await AsyncStorage.getItem('users')
+      console.log('user storage', usersStorage)
 
       // Check if usersStorage is not empty
       if (usersStorage) {
+        console.log('masuk', JSON.parse(usersStorage))
         setUsersData(JSON.parse(usersStorage))
       }
 
       let newId = 1
+      console.log(usersData)
 
       // If usersData is not empty, get the last id and add 1
       if (usersData.length > 0) {
@@ -61,6 +64,7 @@ export default function NewRecordScreen({ navigation }) {
 
       // Add the new user to usersData
       usersData.push(newUser)
+      console.log(usersData)
 
       // Save updated usersData to AsyncStorage
       await AsyncStorage.setItem('users', JSON.stringify(usersData))
