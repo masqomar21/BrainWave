@@ -3,8 +3,8 @@ import {
   ScrollView, Text, TextInput, View, Dimensions
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRoute } from '@react-navigation/native'
-// import { LineChart } from 'react-native-chart-kit'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { LineChart } from 'react-native-chart-kit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
@@ -31,9 +31,14 @@ export default function Detail({ navigation }) {
     setRecordsData(JSON.parse(items))
   }
 
-  useEffect(() => {
-    readRecordsFromStorage()
-  }, [route])
+  useFocusEffect(
+    React.useCallback(() => {
+      readRecordsFromStorage()
+    }, [])
+  )
+  // useEffect(() => {
+  //   readRecordsFromStorage()
+  // }, [route])
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
@@ -95,7 +100,7 @@ export default function Detail({ navigation }) {
                       />
                       <View className="mt-5 flex relative">
 
-                          {/* <LineChart
+                          <LineChart
                               data={data}
                               width={screenWidth - 80}
                               height={200}
@@ -115,7 +120,7 @@ export default function Detail({ navigation }) {
                                 marginVertical: 8,
                                 borderRadius: 16
                               }}
-                          /> */}
+                          />
                       </View>
                   </View>
               </View>
