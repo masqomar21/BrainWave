@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import {
   ScrollView, Text, TextInput, View, Dimensions
@@ -14,7 +15,7 @@ import useFs from '../lib/fs'
 export default function Detail({ navigation }) {
   const screenWidth = Dimensions.get('window').width
   const [records, setRecordsData] = useState([])
-  const [recordsData, setRecordsDatas] = useState([])
+  const [chartData, setChartData] = useState([])
   const route = useRoute()
   const {
     id, name, age, gender
@@ -34,14 +35,16 @@ export default function Detail({ navigation }) {
 
   const readRecordsFromStorage = async () => {
     const items = await AsyncStorage.getItem('records')
-    setRecordsData(JSON.parse(items))
+    const dataRecord = items ? JSON.parse(items) : []
+    setRecordsData(dataRecord.find((item) => item.id === id))
   }
 
   const getRecordsDataFormFile = async () => {
 
     // chenge the file name in here
+    // need some logic to get all file name refer to the id
     const fileName = `device${0}`
-    setRecordsDatas(await readFile(fileName))
+    setChartData(await readFile(fileName))
     // console.log('recordsData:', recordsData)
 
   }
@@ -121,7 +124,7 @@ export default function Detail({ navigation }) {
                             ? (
                                 <ScrollView horizontal>
                                     <LineChart
-                                        data={{ datasets: [{ data: recordsData }] }}
+                                        data={{ datasets: [{ data: chartData }] }}
                                         width={recordsData.length * 5}
                                         height={200}
                                         xAxisLabel="s"
