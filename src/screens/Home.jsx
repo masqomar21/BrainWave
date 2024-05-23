@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 
+import useFs from '../lib/fs'
+
 const test = require('../../assets/test.png')
 
 const pencil = require('../../assets/images/pencil.png')
@@ -17,6 +19,8 @@ export default function HomeScreen({ navigation }) {
   const handleNavigation = (target) => {
     navigation.navigate(target)
   }
+
+  const { deleteAllFiles } = useFs()
 
   const data = [
     {
@@ -144,6 +148,12 @@ export default function HomeScreen({ navigation }) {
               <BtnComp
                   title="Reset Data"
                   onPress={() => deleteAllDatas()}
+                  classComp="bg-red-400 mt-5"
+                  fluid
+              />
+              <BtnComp
+                  title="Reset data file"
+                  onPress={() => deleteAllFiles()}
                   classComp="bg-red-400 mt-5"
                   fluid
               />

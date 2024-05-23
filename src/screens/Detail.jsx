@@ -9,33 +9,50 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
 
+import useFs from '../lib/fs'
+
 export default function Detail({ navigation }) {
   const screenWidth = Dimensions.get('window').width
   const [records, setRecordsData] = useState([])
+  const [recordsData, setRecordsDatas] = useState([])
   const route = useRoute()
   const {
     id, name, age, gender
   } = route.params
 
-  const data = {
-    // labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
-      }
-    ]
-  }
+  const { readFile } = useFs()
+
+  // const data = {
+  //   // labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+  //   datasets: [
+  //     {
+  //       // data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
+  //       data: recordsData
+  //     }
+  //   ]
+  // }
 
   const readRecordsFromStorage = async () => {
     const items = await AsyncStorage.getItem('records')
     setRecordsData(JSON.parse(items))
   }
 
+  const getRecordsDataFormFile = async () => {
+
+    // chenge the file name in here
+    const fileName = `device${0}`
+    setRecordsDatas(await readFile(fileName))
+    // console.log('recordsData:', recordsData)
+
+  }
+
   useFocusEffect(
     React.useCallback(() => {
       readRecordsFromStorage()
+      getRecordsDataFormFile()
     }, [])
   )
+
   // useEffect(() => {
   //   readRecordsFromStorage()
   // }, [route])
@@ -100,27 +117,37 @@ export default function Detail({ navigation }) {
                       />
                       <View className="mt-5 flex relative">
 
-                          <LineChart
-                              data={data}
-                              width={screenWidth - 80}
-                              height={200}
-                              xAxisLabel="s"
-                              chartConfig={{
-                                backgroundGradientFrom: '#f0f0f0',
-                                backgroundGradientTo: '#d3d2dd',
-                                decimalPlaces: 0,
-                                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                                style: {
-                                  borderRadius: 16
-                                }
-                              }}
-                              bezier
-                              style={{
-                                marginVertical: 8,
-                                borderRadius: 16
-                              }}
-                          />
+                          {recordsData?.length > 0
+                            ? (
+                                <ScrollView horizontal>
+                                    <LineChart
+                                        data={{ datasets: [{ data: recordsData }] }}
+                                        width={recordsData.length * 5}
+                                        height={200}
+                                        xAxisLabel="s"
+                                        withDots={false}
+                                        withInnerLines={false}
+                                        withShadow={false}
+                                        chartConfig={{
+                                          backgroundGradientFrom: '#f0f0f0',
+                                          backgroundGradientTo: '#d3d2dd',
+                                          decimalPlaces: 0,
+                                          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                                          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                          style: {
+                                            borderRadius: 16
+                                          }
+                                        }}
+                                    // bezier
+                                        style={{
+                                          marginVertical: 8,
+                                          padding: 0,
+                                          borderRadius: 16
+                                        }}
+                                    />
+                                </ScrollView>
+                            )
+                            : <Text>Belum ada data</Text>}
                       </View>
                   </View>
               </View>

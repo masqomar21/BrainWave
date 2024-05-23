@@ -14,12 +14,23 @@ export default function FindDeviceScreen({ navigation }) {
   const [data, setData] = React.useState(null)
   const [count, setCount] = React.useState(0)
   const handlePress = () => {
-    createAndWritefile(`device${count}`, { id: '123456' })
+    // createAndWritefile(`device${count}`, [Math.random()])
+    const generateRandomNumbers = () => {
+      const randomNumbers = []
+      for (let i = 0; i < 100; i += 1) {
+        // make random int between 0 and 100
+        randomNumbers.push(Math.floor(Math.random() * 100))
+        // randomNumbers.push(Math.random())
+      }
+      return randomNumbers
+    }
+
+    createAndWritefile(`device${count}`, generateRandomNumbers())
     setCount(count + 1)
   }
 
   const handleData = async () => {
-    setData(await readFile('device'))
+    setData(await readFile(`device${count - 1}`))
     cekFileLocation()
     const files = await getAllFiles()
   }

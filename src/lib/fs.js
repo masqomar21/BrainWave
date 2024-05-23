@@ -31,9 +31,10 @@ export default function useFs() {
       const data = await fs.readAsStringAsync(fileURL)
       return JSON.parse(data)
     } catch (error) {
-      console.error(error)
+      console.log(error)
+      return null
     }
-    return null // Add a return statement at the end of the function
+    // Add a return statement at the end of the function
   }
 
   const deleteFile = async function (fileName) {
@@ -58,7 +59,7 @@ export default function useFs() {
     console.log('files:', files)
     return files
   }
-  
+
   const deleteAllFiles = async function () {
     const files = await fs.readDirectoryAsync(fs.documentDirectory)
     files.forEach(async (file) => {
@@ -71,7 +72,8 @@ export default function useFs() {
     readFile,
     deleteFile,
     cekFileLocation,
-    getAllFiles
+    getAllFiles,
+    deleteAllFiles
   }
 
 }
