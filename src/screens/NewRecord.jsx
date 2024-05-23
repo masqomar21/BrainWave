@@ -16,7 +16,7 @@ const hujan = require('../../assets/images/hujan.png')
 const burung = require('../../assets/images/burung.png')
 const api = require('../../assets/images/api.png')
 
-export default function NewRecordScreen({ navigation }) {
+export default async function NewRecordScreen({ navigation }) {
   const [nama, setNama] = useState('nama')
   const [umur, setUmur] = useState('')
   const [kelamin, setKelamin] = useState('')
@@ -32,6 +32,10 @@ export default function NewRecordScreen({ navigation }) {
 
   const handleFreq = (freqType) => {
     setFreq(freqType)
+  }
+
+  const handleNavigate = () => {
+    navigation.navigate('FindDevice')
   }
 
   const storeData = async () => {
