@@ -82,6 +82,7 @@ export default async function NewRecordScreen({ navigation }) {
     setNama('')
     setUmur('')
     setKelamin(0)
+    handleNavigate()
   }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
