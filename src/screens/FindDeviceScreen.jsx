@@ -5,9 +5,23 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Fontisto, Entypo } from '@expo/vector-icons'
 
+import useFs from '../lib/fs'
+
 export default function FindDeviceScreen({ navigation }) {
+  const {
+    createAndWritefile, readFile, deleteFile, cekFileLocation, getAllFiles
+  } = useFs()
+  const [data, setData] = React.useState(null)
+  const [count, setCount] = React.useState(0)
   const handlePress = () => {
-    console.log('Pressed')
+    createAndWritefile(`device${count}`, { id: '123456' })
+    setCount(count + 1)
+  }
+
+  const handleData = async () => {
+    setData(await readFile('device'))
+    cekFileLocation()
+    const files = await getAllFiles()
   }
 
   return (
@@ -22,6 +36,8 @@ export default function FindDeviceScreen({ navigation }) {
               <Text className="text-3xl font-bold text-center text-white">
                   BRAINWAVE
               </Text>
+              <Text>{JSON.stringify(data)}</Text>
+
               <TouchableOpacity onPress={handlePress} className="bg-white p-5 mt-10 rounded-full aspect-square items-center">
                   <Fontisto name="power" size={100} color="#0047AB" />
               </TouchableOpacity>
@@ -30,9 +46,9 @@ export default function FindDeviceScreen({ navigation }) {
                   Find Device
               </Text>
 
-              <Text className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
-                  sambungkan
-              </Text>
+              <Pressable onPress={handleData} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+                  <Text>sambungkan</Text>
+              </Pressable>
 
           </View>
       </SafeAreaView>
