@@ -34,6 +34,10 @@ export default function NewRecordScreen({ navigation }) {
     setFreq(freqType)
   }
 
+  const handleNavigate = () => {
+    navigation.navigate('FindDevice')
+  }
+
   const storeData = async () => {
     try {
       // Retrieve users data from AsyncStorage
@@ -78,6 +82,7 @@ export default function NewRecordScreen({ navigation }) {
     setNama('')
     setUmur('')
     setKelamin(0)
+    handleNavigate()
   }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
