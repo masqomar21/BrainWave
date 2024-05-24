@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   View, Text, ScrollView, Image, TouchableOpacity, TextInput
 } from 'react-native'
@@ -7,16 +7,17 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@candlefinance/slider'
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 
-const test = require('../../assets/test.png')
 const ombak = require('../../assets/images/ombak.png')
 const hujan = require('../../assets/images/hujan.png')
 const burung = require('../../assets/images/burung.png')
 const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
+  const user = useRef()
   const [nama, setNama] = useState('nama')
   const [umur, setUmur] = useState('')
   const [kelamin, setKelamin] = useState('')
@@ -35,75 +36,59 @@ export default function NewRecordScreen({ navigation }) {
   }
 
   const handleNavigate = () => {
-    navigation.navigate('FindDevice')
+    navigation.navigate('FindDevice', {
+      userId: user.current,
+      sound,
+      freq,
+      volume,
+      date: new Date().toDateString()
+    })
   }
 
   const storeData = async () => {
     try {
-      // Retrieve users data from AsyncStorage
-      const usersStorage = await AsyncStorage.getItem('users')
-
-      // Check if usersStorage is not empty
-      if (usersStorage) {
-        setUsersData(JSON.parse(usersStorage))
-      }
-
       let newId = 1
-
-      // If usersData is not empty, get the last id and add 1
-      setUsersData((prevUsersData) => {
-        // create new id
-        if (prevUsersData.length > 0) {
-          newId = prevUsersData[prevUsersData.length - 1].id + 1
-        }
-
-        // create new user object
-        const newUser = {
-          id: newId,
-          name: nama,
-          age: umur,
-          gender: kelamin
-        }
-
-        // add new user to usersData
-        const updatedUsersData = [...prevUsersData, newUser]
-
-        // Save updated usersData to AsyncStorage
-        AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
-
-        // return updated usersData
-        return updatedUsersData
-      })
+      if (usersData.length > 0) {
+        newId = usersData[usersData.length - 1].id + 1
+      }
+      const newUser = {
+        id: newId,
+        name: nama,
+        age: umur,
+        gender: kelamin
+      }
+      user.current = newUser.id
+      const updatedUsersData = [...usersData, newUser]
+      await AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
+      setUsersData(updatedUsersData)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }
-    // clear form
     setNama('')
     setUmur('')
     setKelamin(0)
     handleNavigate()
   }
+
+  const getData = async () => {
+    const usersStorage = await AsyncStorage.getItem('users')
+    if (usersStorage) {
+      setUsersData(JSON.parse(usersStorage))
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData()
+    }, [])
+  )
+
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
               <View className="flex-1 px-5">
-                  {/* <Text className="text-center text-base font-bold">
-                      { nama !== '' ? nama : ''}
-                      {', '}
-                      { umur !== 0 ? `(Umur: ${umur})` : ''}
-                      {', '}
-                      { kelamin !== 0 ? `(Kelamin: ${kelamin})` : ''}
-                  </Text>
-                  <Text className="text-center text-base font-bold">
-                      { sound !== '' ? sound : 'Pilih Suara'}
-                      {' '}
-                      { freq !== 0 ? `(${freq} Hz)` : ''}
-                      {' '}
-                      { volume !== 0 ? `(${volume} %)` : ''}
-                  </Text> */}
-
                   <View
                       className="w-full rounded-xl p-5 bg-white"
                       style={{

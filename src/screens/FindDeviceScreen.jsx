@@ -1,39 +1,91 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import {
   Image, Text, View, TouchableOpacity, ScrollView, Pressable
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Fontisto, Entypo } from '@expo/vector-icons'
 
+import { useFocusEffect, useRoute } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import useFs from '../lib/fs'
 
 export default function FindDeviceScreen({ navigation }) {
+  // const [recordData, setRecordData] = useState({})
+  const recordData = useRef({})
+  const [records, setRecords] = useState([])
+
+  // temporary data for testing
+  const [data, setData] = useState()
   const {
     createAndWritefile, readFile, deleteFile, cekFileLocation, getAllFiles
   } = useFs()
-  const [data, setData] = React.useState(null)
-  const [count, setCount] = React.useState(0)
+  const route = useRoute()
+  const {
+    userId, sound, freq, volume, date
+  } = route.params
+
+  console.log('userId:', userId)
   const handlePress = () => {
-    // createAndWritefile(`device${count}`, [Math.random()])
+    storeData()
     const generateRandomNumbers = () => {
       const randomNumbers = []
       for (let i = 0; i < 100; i += 1) {
-        // make random int between 0 and 100
         randomNumbers.push(Math.floor(Math.random() * 100))
-        // randomNumbers.push(Math.random())
       }
       return randomNumbers
     }
+    console.log('recordData:', recordData)
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, generateRandomNumbers())
 
-    createAndWritefile(`device${count}`, generateRandomNumbers())
-    setCount(count + 1)
   }
 
-  const handleData = async () => {
-    setData(await readFile(`device${count - 1}`))
+  const storeData = async () => {
+    try {
+      let newId = 1
+      if (records.length > 0) {
+        newId = records[records.length - 1].id + 1
+      }
+      const newItem = {
+        id: newId,
+        userId,
+        sound,
+        freq,
+        volume,
+        date
+      }
+      recordData.current = newItem
+      setRecords([...records, newItem])
+      const updateDataRecords = [...records, newItem]
+      AsyncStorage.setItem('records', JSON.stringify(updateDataRecords))
+
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('error:', e)
+    }
+  }
+  const getRecoredDataStorage = async () => {
+    const recordsDataStorage = await AsyncStorage.getItem('records')
+
+    if (recordsDataStorage) {
+      setRecords(JSON.parse(recordsDataStorage))
+    }
+  }
+
+  const getRecordsDataFormFile = async () => {
+    const fileName = `recorde_${recordData.current.id}_${recordData.current.userId}`
+    setData(await readFile(fileName))
     cekFileLocation()
     const files = await getAllFiles()
+    console.log('files:', files)
+
   }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // storeData()
+      getRecoredDataStorage()
+    }, [])
+  )
 
   return (
       <SafeAreaView className="flex-1 bg-[#0047AB] px-2 py-2">
@@ -57,7 +109,7 @@ export default function FindDeviceScreen({ navigation }) {
                   Find Device
               </Text>
 
-              <Pressable onPress={handleData} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+              <Pressable onPress={getRecordsDataFormFile} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
                   <Text>sambungkan</Text>
               </Pressable>
 

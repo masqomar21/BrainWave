@@ -56,7 +56,7 @@ export default function useFs() {
   }
   const getAllFiles = async function () {
     const files = await fs.readDirectoryAsync(fs.documentDirectory)
-    console.log('files:', files)
+    // console.log('files:', files)
     return files
   }
 

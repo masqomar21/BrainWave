@@ -5,60 +5,50 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
-import { LineChart } from 'react-native-chart-kit'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
 
-import useFs from '../lib/fs'
+import ChartData from '../components/chartData'
 
 export default function Detail({ navigation }) {
-  const screenWidth = Dimensions.get('window').width
   const [records, setRecordsData] = useState([])
-  const [chartData, setChartData] = useState([])
   const route = useRoute()
   const {
     id, name, age, gender
   } = route.params
 
-  const { readFile } = useFs()
-
-  // const data = {
-  //   // labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-  //   datasets: [
-  //     {
-  //       // data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
-  //       data: recordsData
-  //     }
-  //   ]
-  // }
-
   const readRecordsFromStorage = async () => {
     const items = await AsyncStorage.getItem('records')
     const dataRecord = items ? JSON.parse(items) : []
-    setRecordsData(dataRecord.find((item) => item.id === id))
-  }
-
-  const getRecordsDataFormFile = async () => {
-
-    // chenge the file name in here
-    // need some logic to get all file name refer to the id
-    const fileName = `device${0}`
-    setChartData(await readFile(fileName))
-    // console.log('recordsData:', recordsData)
-
+    setRecordsData(dataRecord.filter((item) => item.userId === id))
   }
 
   useFocusEffect(
     React.useCallback(() => {
       readRecordsFromStorage()
-      getRecordsDataFormFile()
     }, [])
   )
 
-  // useEffect(() => {
-  //   readRecordsFromStorage()
-  // }, [route])
+  const mapFunction = () => {
+    if (records) {
+      return records.map((item, index) => (
+          <React.Fragment key={index}>
+              <Text>
+                  {'remakaman pada '}
+                  {item.date}
+                  {' dengan '}
+                  {item.sound ? `suara ${item.sound}` : `frekuensi ${item.freq}` }
+                  {' dan volume '}
+                  {item.volume}
+              </Text>
+              <ChartData userId={id} recordId={item.id} />
+          </React.Fragment>
+      ))
+    }
+    return <Text>Belum ada rekaman</Text>
+  }
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
@@ -78,8 +68,6 @@ export default function Detail({ navigation }) {
                         elevation: 5
                       }}
                   >
-
-                      <Text className="font-bold text-base mt-3">{JSON.stringify(records)}</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
                           value={name}
@@ -119,38 +107,8 @@ export default function Detail({ navigation }) {
                           fluid
                       />
                       <View className="mt-5 flex relative">
-
-                          {recordsData?.length > 0
-                            ? (
-                                <ScrollView horizontal>
-                                    <LineChart
-                                        data={{ datasets: [{ data: chartData }] }}
-                                        width={recordsData.length * 5}
-                                        height={200}
-                                        xAxisLabel="s"
-                                        withDots={false}
-                                        withInnerLines={false}
-                                        withShadow={false}
-                                        chartConfig={{
-                                          backgroundGradientFrom: '#f0f0f0',
-                                          backgroundGradientTo: '#d3d2dd',
-                                          decimalPlaces: 0,
-                                          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                                          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                                          style: {
-                                            borderRadius: 16
-                                          }
-                                        }}
-                                    // bezier
-                                        style={{
-                                          marginVertical: 8,
-                                          padding: 0,
-                                          borderRadius: 16
-                                        }}
-                                    />
-                                </ScrollView>
-                            )
-                            : <Text>Belum ada data</Text>}
+                          <Text className="font-bold text-base">grafik</Text>
+                          {mapFunction()}
                       </View>
                   </View>
               </View>
