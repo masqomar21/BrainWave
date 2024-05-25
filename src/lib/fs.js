@@ -1,19 +1,6 @@
 /* eslint-disable no-console */
 import * as fs from 'expo-file-system'
 
-// // craete and write and read a .lib file
-// const createAndWriteLibFile = async (data, name) => {
-//   const libFilePath = `${FileSystem.documentDirectory}${name}.lib`
-//   const libFileContent = JSON.stringify(data)
-
-//   try {
-//     await FileSystem.writeAsStringAsync(libFilePath, libFileContent)
-//     console.log('Successfully created and wrote the .lib file')
-//   } catch (error) {
-//     console.log('Error creating and writing the .lib file:', error)
-//   }
-// }
-
 export default function useFs() {
   const createAndWritefile = async function (fileName, content) {
     const fileURL = `${fs.documentDirectory}${fileName}.lib`

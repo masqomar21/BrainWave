@@ -26,7 +26,7 @@ export default function NewRecordScreen({ navigation }) {
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
-  const [recordsData, setRecordsData] = useState([])
+  // const [recordsData, setRecordsData] = useState([])
 
   const handleSound = (soundType) => {
     setSound(soundType)
@@ -38,43 +38,53 @@ export default function NewRecordScreen({ navigation }) {
     setSound('')
   }
 
-  const storeData = async () => {
-    try {
-      // Retrieve records data from AsyncStorage
-      const recordsStorage = await AsyncStorage.getItem('records')
-
-      // Check if recordsStorage is not empty
-      if (recordsStorage) {
-        setRecordsData(JSON.parse(recordsStorage))
-      }
-
-      let newId = 1
-
-      // If recordsData is not empty, get the last id and add 1
-      if (recordsData.length > 0) {
-        newId = recordsData[recordsData.length - 1].id + 1
-      }
-
-      // Create a new record object
-      const newRecords = {
-        id: newId,
-        userId: id,
-        sound,
-        freq,
-        volume,
-        filePath: ''
-      }
-
-      // Add the new record to recordsData
-      recordsData.push(newRecords)
-
-      // Save updated recordsData to AsyncStorage
-      await AsyncStorage.setItem('records', JSON.stringify(recordsData))
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
+  const handleNavigate = () => {
+    navigation.navigate('FindDevice', {
+      userId: id,
+      sound,
+      freq,
+      volume,
+      date: new Date().toDateString()
+    })
   }
+
+  // const storeData = async () => {
+  //   try {
+  //     // Retrieve records data from AsyncStorage
+  //     const recordsStorage = await AsyncStorage.getItem('records')
+
+  //     // Check if recordsStorage is not empty
+  //     if (recordsStorage) {
+  //       setRecordsData(JSON.parse(recordsStorage))
+  //     }
+
+  //     let newId = 1
+
+  //     // If recordsData is not empty, get the last id and add 1
+  //     if (recordsData.length > 0) {
+  //       newId = recordsData[recordsData.length - 1].id + 1
+  //     }
+
+  //     // Create a new record object
+  //     const newRecords = {
+  //       id: newId,
+  //       userId: id,
+  //       sound,
+  //       freq,
+  //       volume,
+  //       filePath: ''
+  //     }
+
+  //     // Add the new record to recordsData
+  //     recordsData.push(newRecords)
+
+  //     // Save updated recordsData to AsyncStorage
+  //     await AsyncStorage.setItem('records', JSON.stringify(recordsData))
+  //   } catch (error) {
+  //     // eslint-disable-next-line no-console
+  //     console.error(error)
+  //   }
+  // }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
@@ -244,7 +254,7 @@ export default function NewRecordScreen({ navigation }) {
                               minimumTrackTintColor="#2549A6"
                           />
                       </View>
-                      <BtnComp title="Dengarkan" onPress={() => storeData()} classComp="bg-green-400 mt-5" fluid />
+                      <BtnComp title="Dengarkan" onPress={() => handleNavigate()} classComp="bg-green-400 mt-5" fluid />
                   </View>
               </View>
           </ScrollView>

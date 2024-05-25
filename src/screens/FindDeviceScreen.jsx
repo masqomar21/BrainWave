@@ -1,30 +1,42 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState } from 'react'
 import {
   Image, Text, View, TouchableOpacity, ScrollView, Pressable
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Fontisto, Entypo } from '@expo/vector-icons'
-
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useFs from '../lib/fs'
+import useBLE from '../lib/useBle'
+import BtnComp from '../components/Button'
 
 export default function FindDeviceScreen({ navigation }) {
-  // const [recordData, setRecordData] = useState({})
   const recordData = useRef({})
   const [records, setRecords] = useState([])
 
   // temporary data for testing
   const [data, setData] = useState()
+
   const {
-    createAndWritefile, readFile, deleteFile, cekFileLocation, getAllFiles
+    createAndWritefile, readFile
   } = useFs()
+  const {
+    connectedDevice,
+    isBluetoothEnabled,
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connecTodDevice,
+    disconnecTodDevice,
+    startStreamingData,
+    writeData
+  } = useBLE()
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
   } = route.params
 
-  console.log('userId:', userId)
   const handlePress = () => {
     storeData()
     const generateRandomNumbers = () => {
@@ -34,9 +46,7 @@ export default function FindDeviceScreen({ navigation }) {
       }
       return randomNumbers
     }
-    console.log('recordData:', recordData)
     createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, generateRandomNumbers())
-
   }
 
   const storeData = async () => {
@@ -74,16 +84,36 @@ export default function FindDeviceScreen({ navigation }) {
   const getRecordsDataFormFile = async () => {
     const fileName = `recorde_${recordData.current.id}_${recordData.current.userId}`
     setData(await readFile(fileName))
-    cekFileLocation()
-    const files = await getAllFiles()
-    console.log('files:', files)
+    // cekFileLocation()
+    // const files = await getAllFiles()
 
+  }
+
+  const scanForDevices = async () => {
+    const isPermissionGranted = await requestPermissions()
+    if (isPermissionGranted) {
+      scanForPeripherals()
+    }
+  }
+
+  const handleConectDevice = async () => {
+    if (allDevices.length > 0) {
+      const device = allDevices[0]
+      connecTodDevice(device)
+      // startStreamingData(device)
+    }
+  }
+
+  const handleDisconectDevice = async () => {
+    if (connectedDevice) {
+      await disconnecTodDevice()
+    }
   }
 
   useFocusEffect(
     React.useCallback(() => {
-      // storeData()
       getRecoredDataStorage()
+      scanForDevices()
     }, [])
   )
 
@@ -99,7 +129,9 @@ export default function FindDeviceScreen({ navigation }) {
               <Text className="text-3xl font-bold text-center text-white">
                   BRAINWAVE
               </Text>
-              <Text>{JSON.stringify(data)}</Text>
+              <Text>
+                  {JSON.stringify(allDevices.map((device) => device.name))}
+              </Text>
 
               <TouchableOpacity onPress={handlePress} className="bg-white p-5 mt-10 rounded-full aspect-square items-center">
                   <Fontisto name="power" size={100} color="#0047AB" />
@@ -109,9 +141,11 @@ export default function FindDeviceScreen({ navigation }) {
                   Find Device
               </Text>
 
-              <Pressable onPress={getRecordsDataFormFile} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+              <Pressable onPress={handleConectDevice} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
                   <Text>sambungkan</Text>
               </Pressable>
+
+              <BtnComp title="putuskan" onPress={() => disconnecTodDevice()} classComp="bg-green-400 mt-5" fluid />
 
           </View>
       </SafeAreaView>

@@ -9,16 +9,13 @@ export default function ChartData(props) {
   const [chartData, setChartData] = useState([])
   const { readFile } = useFs()
   const getRecordsDataFormFile = async () => {
-
-    // chenge the file name in here
-    // need some logic to get all file name refer to the id
     const fileName = `recorde_${recordId}_${userId}`
     setChartData(await readFile(fileName))
-    // console.log('recordsData:', recordsData
   }
 
   useEffect(() => {
     getRecordsDataFormFile()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
       <ScrollView horizontal>
@@ -40,7 +37,6 @@ export default function ChartData(props) {
                   borderRadius: 16
                 }
               }}
-                                    // bezier
               style={{
                 marginVertical: 8,
                 padding: 0,

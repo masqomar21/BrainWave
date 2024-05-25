@@ -36,7 +36,8 @@ export default function Detail({ navigation }) {
       return records.map((item, index) => (
           <React.Fragment key={index}>
               <Text>
-                  {'remakaman pada '}
+                  {index + 1}
+                  {'. remakaman pada '}
                   {item.date}
                   {' dengan '}
                   {item.sound ? `suara ${item.sound}` : `frekuensi ${item.freq}` }
