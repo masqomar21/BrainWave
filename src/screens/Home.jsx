@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Image, Text, View, TouchableOpacity, ScrollView
 } from 'react-native'
@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 
 import useFs from '../lib/fs'
+import useBLE from '../lib/useBle'
+import { CONSOLE } from '../lib/log'
 
 const test = require('../../assets/test.png')
 
@@ -21,6 +23,7 @@ export default function HomeScreen({ navigation }) {
   }
 
   const { deleteAllFiles } = useFs()
+  const { requestPermissions } = useBLE()
 
   const data = [
     {
@@ -43,7 +46,7 @@ export default function HomeScreen({ navigation }) {
   ]
 
   const deleteAllDatas = async () => {
-    const keys = ['users', 'records']
+    const keys = ['users', 'records', 'isFirstLaunch']
     try {
       await AsyncStorage.multiRemove(keys)
     } catch (error) {
@@ -51,6 +54,24 @@ export default function HomeScreen({ navigation }) {
       console.error(error)
     }
   }
+
+  useEffect(() => {
+    const isFirtsLounch = async () => {
+      try {
+        const firstLounch = await AsyncStorage.getItem('isFirstLaunch')
+        if (firstLounch === null) {
+          const isPermissionGranted = requestPermissions()
+          if (isPermissionGranted) {
+            await AsyncStorage.setItem('isFirstLaunch', 'false')
+          }
+        }
+      } catch (error) {
+        CONSOLE.log(error)
+      }
+    }
+    isFirtsLounch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200 p-5 ">

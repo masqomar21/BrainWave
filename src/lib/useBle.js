@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable consistent-return */
 import { useMemo, useState } from 'react'
 // eslint-disable-next-line react-native/split-platform-components
@@ -23,7 +24,7 @@ export default function useBLE() {
 
   const isBluetoothEnabled = async function () {
     // console.log(await bleManager.state())
-    return bleManager.state()
+    return await bleManager.state()
   }
 
   const requestAndroid31Permissions = async function () {
@@ -146,7 +147,7 @@ export default function useBLE() {
     }
 
     const rawDataEncoded = base64.decode(Characteristic.value)
-    CONSOLE.log(rawDataEncoded)
+    // CONSOLE.log(rawDataEncoded)
     setRawData(rawDataEncoded)
   }
 
