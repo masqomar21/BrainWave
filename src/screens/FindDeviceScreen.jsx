@@ -33,9 +33,9 @@ export default function FindDeviceScreen({ navigation }) {
     connecTodDevice,
     disconnecTodDevice,
     startStreamingData,
-    writeData,
-    rawData
+    collectedData
   } = useBLE()
+  const [dataWave, setDataWave] = useState([])
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
@@ -94,19 +94,9 @@ export default function FindDeviceScreen({ navigation }) {
   }
 
   const scanForDevices = async () => {
-    try {
-      const isForstLounch = await AsyncStorage.getItem('isFirstLaunch')
-      if (isForstLounch === null) {
-        const isPermissionGranted = await requestPermissions()
-        if (isPermissionGranted) {
-          await AsyncStorage.setItem('isFirstLaunch', 'false')
-          scanForPeripherals()
-        }
-      } else {
-        scanForPeripherals()
-      }
-    } catch (error) {
-      CONSOLE.log(error)
+    const isPermissionGranted = await requestPermissions()
+    if (isPermissionGranted) {
+      scanForPeripherals()
     }
   }
 
@@ -118,7 +108,18 @@ export default function FindDeviceScreen({ navigation }) {
     }
   }
 
-  CONSOLE.log('data', rawData)
+  const handleDone = async () => {
+
+    storeData()
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
+    console.log(collectedData)
+    if (connectedDevice) {
+      await disconnecTodDevice()
+      scanForDevices()
+    }
+  }
+
+  // CONSOLE.log('data', rawData)
 
   const handleDisconectDevice = async () => {
     if (connectedDevice) {
@@ -174,6 +175,10 @@ export default function FindDeviceScreen({ navigation }) {
 
               <Pressable onPress={handleConectDevice} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
                   <Text>sambungkan</Text>
+              </Pressable>
+
+              <Pressable onPress={handleDone} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+                  <Text>selesai</Text>
               </Pressable>
 
               <BtnComp title="putuskan" onPress={() => disconnecTodDevice()} classComp="bg-green-400 mt-5" fluid />

@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react'
 import {
-  View, Text, ScrollView, Image, TouchableOpacity, TextInput, Modal
+  View, Text, ScrollView, Image, TouchableOpacity, TextInput, Alert
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -50,7 +50,7 @@ export default function NewRecordScreen({ navigation }) {
         Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
       } else {
         navigation.navigate('FindDevice', {
-          userId: user.current,
+          userId: id,
           sound,
           freq,
           volume,

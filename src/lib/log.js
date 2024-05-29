@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/prefer-default-export
 export const CONSOLE = {
   log(message, ...args) {
-    console.log(message)
+    console.log(message, args)
   },
   info(message, ...args) {
     console.info(message, args)
