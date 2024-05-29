@@ -1,6 +1,8 @@
+/* eslint-disable no-alert */
 import React, { useEffect, useRef, useState } from 'react'
 import {
-  View, Text, ScrollView, Image, TouchableOpacity, TextInput
+  View, Text, ScrollView, Image, TouchableOpacity, TextInput,
+  Alert
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
+import useBLE from '../lib/useBle'
 
 const ombak = require('../../assets/images/ombak.png')
 const hujan = require('../../assets/images/hujan.png')
@@ -27,22 +30,36 @@ export default function NewRecordScreen({ navigation }) {
   const [volume, setVolume] = useState(20)
   const [usersData, setUsersData] = useState([])
 
+  const { isBluetoothEnabled } = useBLE()
+
   const handleSound = (soundType) => {
+    setFreq(0)
     setSound(soundType)
   }
 
   const handleFreq = (freqType) => {
+    setSound('')
     setFreq(freqType)
   }
 
-  const handleNavigate = () => {
-    navigation.navigate('FindDevice', {
-      userId: user.current,
-      sound,
-      freq,
-      volume,
-      date: new Date().toDateString()
-    })
+  const handleNavigate = async () => {
+    const isActive = await isBluetoothEnabled()
+    if (isActive === 'PoweredOn') {
+      // eslint-disable-next-line no-mixed-operators
+      if (sound === '' && freq === 0 || volume === 0) {
+        Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      } else {
+        navigation.navigate('FindDevice', {
+          userId: user.current,
+          sound,
+          freq,
+          volume,
+          date: new Date().toDateString()
+        })
+      }
+    } else {
+      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
+    }
   }
 
   const storeData = async () => {

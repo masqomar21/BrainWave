@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable consistent-return */
 import { useMemo, useState } from 'react'
 // eslint-disable-next-line react-native/split-platform-components
@@ -19,11 +20,12 @@ export default function useBLE() {
   const [allDevices, setALlDevices] = useState([])
   const [connectedDevice, setConnectedDevice] = useState(null)
   const [rawData, setRawData] = useState(null)
+  const [collectedData, setCollectedData] = useState([])
   const [err, setErr] = useState(null)
 
   const isBluetoothEnabled = async function () {
     // console.log(await bleManager.state())
-    return bleManager.state()
+    return await bleManager.state()
   }
 
   const requestAndroid31Permissions = async function () {
@@ -108,6 +110,7 @@ export default function useBLE() {
       const deviceConnection = await bleManager.connectToDevice(device.id)
       setConnectedDevice(deviceConnection)
       await deviceConnection.discoverAllServicesAndCharacteristics()
+      CONSOLE.log('CONNECTED TO DEVICE', deviceConnection.id)
       // bleManager.startDeviceScan()
       bleManager.stopDeviceScan()
       await startStreamingData(deviceConnection)
@@ -146,8 +149,10 @@ export default function useBLE() {
     }
 
     const rawDataEncoded = base64.decode(Characteristic.value)
-    CONSOLE.log(rawDataEncoded)
-    setRawData(rawDataEncoded)
+    // CONSOLE.log(rawDataEncoded)
+    setRawData(parseInt(rawDataEncoded, 10))
+    CONSOLE.log('data wave', collectedData)
+    setCollectedData((prevState) => [...prevState, parseInt(rawDataEncoded, 10)])
   }
 
   const writeData = async function (data) {
@@ -195,6 +200,7 @@ export default function useBLE() {
     connectedDevice,
     disconnecTodDevice,
     rawData,
+    collectedData,
     writeData,
     err
   }

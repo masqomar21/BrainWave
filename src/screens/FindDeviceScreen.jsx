@@ -1,7 +1,9 @@
+/* eslint-disable no-alert */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState } from 'react'
 import {
-  Image, Text, View, TouchableOpacity, ScrollView, Pressable
+  Image, Text, View, TouchableOpacity, ScrollView, Pressable,
+  Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Fontisto, Entypo } from '@expo/vector-icons'
@@ -10,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import useFs from '../lib/fs'
 import useBLE from '../lib/useBle'
 import BtnComp from '../components/Button'
+import { CONSOLE } from '../lib/log'
 
 export default function FindDeviceScreen({ navigation }) {
   const recordData = useRef({})
@@ -30,8 +33,9 @@ export default function FindDeviceScreen({ navigation }) {
     connecTodDevice,
     disconnecTodDevice,
     startStreamingData,
-    writeData
+    collectedData
   } = useBLE()
+  const [dataWave, setDataWave] = useState([])
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
@@ -104,10 +108,38 @@ export default function FindDeviceScreen({ navigation }) {
     }
   }
 
+  const handleDone = async () => {
+
+    storeData()
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
+    console.log(collectedData)
+    if (connectedDevice) {
+      await disconnecTodDevice()
+      scanForDevices()
+    }
+  }
+
+  // CONSOLE.log('data', rawData)
+
   const handleDisconectDevice = async () => {
     if (connectedDevice) {
       await disconnecTodDevice()
     }
+  }
+
+  const handleNavigarion = () => {
+    Alert.alert(
+      'Navigasi',
+      'Apakah anda yakin ingin kembali ke halaman utama?',
+      [
+        {
+          text: 'Ya',
+          onPress: () => navigation.navigate('Home')
+        }
+      ],
+      { cancelable: true }
+    )
+    // navigation.navigate('Home')
   }
 
   useFocusEffect(
@@ -120,7 +152,7 @@ export default function FindDeviceScreen({ navigation }) {
   return (
       <SafeAreaView className="flex-1 bg-[#0047AB] px-2 py-2">
           <View className="flex flex-row items-center justify-end">
-              <Pressable onPress={() => (navigation.goBack())} className="m-5 p-2 bg-white rounded-full">
+              <Pressable onPress={handleNavigarion} className="m-5 p-2 bg-white rounded-full">
                   <Entypo name="chevron-right" size={24} color="black" />
               </Pressable>
           </View>
@@ -143,6 +175,10 @@ export default function FindDeviceScreen({ navigation }) {
 
               <Pressable onPress={handleConectDevice} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
                   <Text>sambungkan</Text>
+              </Pressable>
+
+              <Pressable onPress={handleDone} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+                  <Text>selesai</Text>
               </Pressable>
 
               <BtnComp title="putuskan" onPress={() => disconnecTodDevice()} classComp="bg-green-400 mt-5" fluid />

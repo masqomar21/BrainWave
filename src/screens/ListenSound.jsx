@@ -1,6 +1,7 @@
+/* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react'
 import {
-  View, Text, ScrollView, Image, TouchableOpacity, TextInput
+  View, Text, ScrollView, Image, TouchableOpacity, TextInput, Alert
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRoute } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
+import useBLE from '../lib/useBle'
 
 const test = require('../../assets/test.png')
 const ombak = require('../../assets/images/ombak.png')
@@ -26,6 +28,8 @@ export default function NewRecordScreen({ navigation }) {
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
+
+  const { isBluetoothEnabled } = useBLE()
   // const [recordsData, setRecordsData] = useState([])
 
   const handleSound = (soundType) => {
@@ -38,57 +42,31 @@ export default function NewRecordScreen({ navigation }) {
     setSound('')
   }
 
-  const handleNavigate = () => {
-    navigation.navigate('FindDevice', {
-      userId: id,
-      sound,
-      freq,
-      volume,
-      date: new Date().toDateString()
-    })
+  const handleNavigate = async () => {
+    const isActive = await isBluetoothEnabled()
+    if (isActive === 'PoweredOn') {
+      // eslint-disable-next-line no-mixed-operators
+      if (sound === '' && freq === 0 || volume === 0) {
+        Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      } else {
+        navigation.navigate('FindDevice', {
+          userId: id,
+          sound,
+          freq,
+          volume,
+          date: new Date().toDateString()
+        })
+      }
+    } else {
+      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
+    }
   }
 
-  // const storeData = async () => {
-  //   try {
-  //     // Retrieve records data from AsyncStorage
-  //     const recordsStorage = await AsyncStorage.getItem('records')
-
-  //     // Check if recordsStorage is not empty
-  //     if (recordsStorage) {
-  //       setRecordsData(JSON.parse(recordsStorage))
-  //     }
-
-  //     let newId = 1
-
-  //     // If recordsData is not empty, get the last id and add 1
-  //     if (recordsData.length > 0) {
-  //       newId = recordsData[recordsData.length - 1].id + 1
-  //     }
-
-  //     // Create a new record object
-  //     const newRecords = {
-  //       id: newId,
-  //       userId: id,
-  //       sound,
-  //       freq,
-  //       volume,
-  //       filePath: ''
-  //     }
-
-  //     // Add the new record to recordsData
-  //     recordsData.push(newRecords)
-
-  //     // Save updated recordsData to AsyncStorage
-  //     await AsyncStorage.setItem('records', JSON.stringify(recordsData))
-  //   } catch (error) {
-  //     // eslint-disable-next-line no-console
-  //     console.error(error)
-  //   }
-  // }
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
+
               <View className="flex-1 px-5">
                   {/* <Text className="text-center text-base font-bold">
                       { sound !== '' ? sound : 'Pilih Suara'}
