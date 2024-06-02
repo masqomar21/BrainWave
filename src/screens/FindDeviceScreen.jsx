@@ -165,7 +165,10 @@ export default function FindDeviceScreen({ navigation }) {
                   {JSON.stringify(allDevices.map((device) => device.name))}
               </Text>
 
-              <TouchableOpacity onPress={handlePress} className="bg-white p-5 mt-10 rounded-full aspect-square items-center">
+              <TouchableOpacity
+                  onPress={handlePress}
+                  className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
+              >
                   <Fontisto name="power" size={100} color="#0047AB" />
               </TouchableOpacity>
 
@@ -173,11 +176,17 @@ export default function FindDeviceScreen({ navigation }) {
                   Find Device
               </Text>
 
-              <Pressable onPress={handleConectDevice} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+              <Pressable
+                  onPress={handleConectDevice}
+                  className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
+              >
                   <Text>sambungkan</Text>
               </Pressable>
 
-              <Pressable onPress={handleDone} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
+              <Pressable
+                  onPress={handleDone}
+                  className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
+              >
                   <Text>selesai</Text>
               </Pressable>
 
