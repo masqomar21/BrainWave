@@ -33,12 +33,12 @@ export default function NewRecordScreen({ navigation }) {
   const { isBluetoothEnabled } = useBLE()
 
   const handleSound = (soundType) => {
-    setFreq(0)
+    // setFreq(0)
     setSound(soundType)
   }
 
   const handleFreq = (freqType) => {
-    setSound('')
+    // setSound('')
     setFreq(freqType)
   }
 
@@ -46,17 +46,17 @@ export default function NewRecordScreen({ navigation }) {
     const isActive = await isBluetoothEnabled()
     if (isActive === 'PoweredOn') {
       // eslint-disable-next-line no-mixed-operators
-      if (sound === '' && freq === 0 || volume === 0) {
-        Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
-      } else {
-        navigation.navigate('FindDevice', {
-          userId: user.current,
-          sound,
-          freq,
-          volume,
-          date: new Date().toDateString()
-        })
-      }
+      // if (sound === '' && freq === 0 || volume === 0) {
+      //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      // } else {
+      navigation.navigate('FindDevice', {
+        userId: user.current,
+        sound,
+        freq,
+        volume,
+        date: new Date().toDateString()
+      })
+      // }
     } else {
       Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
     }
@@ -76,6 +76,7 @@ export default function NewRecordScreen({ navigation }) {
       }
       user.current = newUser.id
       const updatedUsersData = [...usersData, newUser]
+      console.log(updatedUsersData)
       await AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
       setUsersData(updatedUsersData)
     } catch (error) {

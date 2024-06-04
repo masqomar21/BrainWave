@@ -34,29 +34,29 @@ export default function NewRecordScreen({ navigation }) {
 
   const handleSound = (soundType) => {
     setSound(soundType)
-    setFreq('')
+    // setFreq('')
   }
 
   const handleFreq = (freqType) => {
     setFreq(freqType)
-    setSound('')
+    // setSound('')
   }
 
   const handleNavigate = async () => {
     const isActive = await isBluetoothEnabled()
     if (isActive === 'PoweredOn') {
       // eslint-disable-next-line no-mixed-operators
-      if (sound === '' && freq === 0 || volume === 0) {
-        Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
-      } else {
-        navigation.navigate('FindDevice', {
-          userId: id,
-          sound,
-          freq,
-          volume,
-          date: new Date().toDateString()
-        })
-      }
+      // if (sound === '' && freq === 0 || volume === 0) {
+      //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      // } else {
+      navigation.navigate('FindDevice', {
+        userId: id,
+        sound,
+        freq,
+        volume,
+        date: new Date().toDateString()
+      })
+      // }
     } else {
       Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
     }
