@@ -59,7 +59,7 @@ export default function CircularLoading(props) {
       handleStopAnimation()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [done])
 
   return (
       <View className="justify-center, items-center">
@@ -72,7 +72,7 @@ export default function CircularLoading(props) {
                           r={radius}
                           fill="none"
                           stroke="black"
-                          opacity={0.25}
+                          opacity={0.15}
                           strokeWidth={strockWidtOuter}
                       />
 

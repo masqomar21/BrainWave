@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-alert */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState } from 'react'
@@ -13,45 +14,30 @@ import useFs from '../lib/fs'
 import useBLE from '../lib/useBle'
 import BtnComp from '../components/Button'
 import { CONSOLE } from '../lib/log'
+import ScanModal from '../components/ScanModal'
 
 export default function FindDeviceScreen({ navigation }) {
   const recordData = useRef({})
   const [records, setRecords] = useState([])
-
-  // temporary data for testing
-  const [data, setData] = useState()
+  const [isModalOpen, setIsModdalOpen] = useState(false)
 
   const {
     createAndWritefile, readFile
   } = useFs()
   const {
     connectedDevice,
-    isBluetoothEnabled,
     requestPermissions,
     scanForPeripherals,
     allDevices,
     connecTodDevice,
     disconnecTodDevice,
-    startStreamingData,
     collectedData
   } = useBLE()
-  const [dataWave, setDataWave] = useState([])
+  // const [dataWave, setDataWave] = useState([])
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
   } = route.params
-
-  const handlePress = () => {
-    storeData()
-    const generateRandomNumbers = () => {
-      const randomNumbers = []
-      for (let i = 0; i < 100; i += 1) {
-        randomNumbers.push(Math.floor(Math.random() * 100))
-      }
-      return randomNumbers
-    }
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, generateRandomNumbers())
-  }
 
   const storeData = async () => {
     try {
@@ -85,15 +71,8 @@ export default function FindDeviceScreen({ navigation }) {
     }
   }
 
-  const getRecordsDataFormFile = async () => {
-    const fileName = `recorde_${recordData.current.id}_${recordData.current.userId}`
-    setData(await readFile(fileName))
-    // cekFileLocation()
-    // const files = await getAllFiles()
-
-  }
-
   const scanForDevices = async () => {
+    setIsModdalOpen(true)
     const isPermissionGranted = await requestPermissions()
     if (isPermissionGranted) {
       scanForPeripherals()
@@ -112,11 +91,13 @@ export default function FindDeviceScreen({ navigation }) {
 
     storeData()
     createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
-    console.log(collectedData)
+    // console.log(collectedData)
     if (connectedDevice) {
       await disconnecTodDevice()
       scanForDevices()
+      setIsModdalOpen(true)
     }
+
   }
 
   // CONSOLE.log('data', rawData)
@@ -124,6 +105,8 @@ export default function FindDeviceScreen({ navigation }) {
   const handleDisconectDevice = async () => {
     if (connectedDevice) {
       await disconnecTodDevice()
+      scanForDevices()
+      setIsModdalOpen(true)
     }
   }
 
@@ -134,7 +117,10 @@ export default function FindDeviceScreen({ navigation }) {
       [
         {
           text: 'Ya',
-          onPress: () => navigation.navigate('Home')
+          onPress: () => {
+            handleDone()
+            navigation.navigate('Home')
+          }
         }
       ],
       { cancelable: true }
@@ -146,6 +132,8 @@ export default function FindDeviceScreen({ navigation }) {
     React.useCallback(() => {
       getRecoredDataStorage()
       scanForDevices()
+      !connectedDevice && setIsModdalOpen(true)
+      // handleConectDevice()
     }, [])
   )
 
@@ -161,36 +149,65 @@ export default function FindDeviceScreen({ navigation }) {
               <Text className="text-3xl font-bold text-center text-white">
                   BRAINWAVE
               </Text>
-              <Text>
-                  {JSON.stringify(allDevices.map((device) => device.name))}
-              </Text>
+              <ScanModal
+                  visible={isModalOpen}
+                  device={connectedDevice}
+                  allDevice={allDevices}
+                  closeModal={setIsModdalOpen}
+                  connecTodDevice={connecTodDevice}
+              />
 
-              <TouchableOpacity
-                  onPress={handlePress}
+              {/* <TouchableOpacity
+                  onPress={() => CONSOLE.log('power')}
                   className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
               >
                   <Fontisto name="power" size={100} color="#0047AB" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
-              <Text className="text-2xl font-bold text-center text-white mt-10">
+              {/* <Text className="text-2xl font-bold text-center text-white mt-10">
                   Find Device
-              </Text>
+              </Text> */}
 
-              <Pressable
+              {/* <Pressable
                   onPress={handleConectDevice}
                   className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
               >
                   <Text>sambungkan</Text>
-              </Pressable>
+              </Pressable> */}
 
-              <Pressable
+              {/* <Pressable
                   onPress={handleDone}
                   className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
               >
                   <Text>selesai</Text>
               </Pressable>
 
-              <BtnComp title="putuskan" onPress={() => disconnecTodDevice()} classComp="bg-green-400 mt-5" fluid />
+              <BtnComp title="putuskan" onPress={handleDisconectDevice} classComp="bg-green-400 mt-5" fluid /> */}
+
+              {connectedDevice ? (
+                  <View className="flex justify-center items-center pt-20">
+                      <TouchableOpacity
+                          onPress={() => CONSOLE.log('power')}
+                          className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
+                      >
+                          <Fontisto name="power" size={100} color="#0047AB" />
+                      </TouchableOpacity>
+
+                      <Pressable
+                          onPress={handleDone}
+                          className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
+                      >
+                          <Text>selesai</Text>
+                      </Pressable>
+
+                      <BtnComp title="putuskan" onPress={handleDisconectDevice} classComp="bg-green-400 mt-5" fluid />
+                  </View>
+
+              ) : (
+                  <Text className="text-2xl text-center font-bold p-5">
+                      Scanning for devices
+                  </Text>
+              )}
 
           </View>
       </SafeAreaView>

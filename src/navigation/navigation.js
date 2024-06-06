@@ -11,7 +11,7 @@ import AboutApp from '../screens/AboutApp'
 import Detail from '../screens/Detail'
 import FindDeviceScreen from '../screens/FindDeviceScreen'
 
-import useBLE from '../lib/useBle'
+// import useBLE from '../lib/useBle'
 import TestScreen from '../screens/test'
 
 const Stack = createNativeStackNavigator()
@@ -23,14 +23,14 @@ const screens = [
   { name: 'ListenSound', component: ListenSound },
   { name: 'AboutApp', component: AboutApp },
   { name: 'Detail', component: Detail },
-  { name: 'FindDevice', component: FindDeviceScreen },
-  { name: 'test', component: TestScreen }
+  { name: 'FindDevice', component: FindDeviceScreen }
+  // { name: 'test', component: TestScreen }
 ]
 
 export default function Navigation() {
   // const { connectedDevice } = useBLE()
   // const initialScreen = connectedDevice ? 'Home' : 'FindDevice'
-  const initialScreen = 'test'
+  const initialScreen = 'Home'
 
   return (
       <NavigationContainer>

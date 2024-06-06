@@ -1,10 +1,7 @@
 import { Dimensions, Text, View } from 'react-native'
-import Animated, { useAnimatedProps, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Svg, { Circle, G } from 'react-native-svg'
 import CircularLoading from '../components/CircularLoading'
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
 export default function TestScreen() {
 

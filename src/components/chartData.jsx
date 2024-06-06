@@ -21,7 +21,7 @@ export default function ChartData(props) {
       <ScrollView horizontal>
           <LineChart
               data={{ datasets: [{ data: chartData }] }}
-              width={chartData.length * 5}
+              width={chartData.length * 2}
               height={200}
               xAxisLabel="s"
               withDots={false}
