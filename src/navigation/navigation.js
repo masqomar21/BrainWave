@@ -23,14 +23,14 @@ const screens = [
   { name: 'ListenSound', component: ListenSound },
   { name: 'AboutApp', component: AboutApp },
   { name: 'Detail', component: Detail },
-  { name: 'FindDevice', component: FindDeviceScreen }
-  // { name: 'test', component: TestScreen }
+  { name: 'FindDevice', component: FindDeviceScreen },
+  { name: 'test', component: TestScreen }
 ]
 
 export default function Navigation() {
   // const { connectedDevice } = useBLE()
   // const initialScreen = connectedDevice ? 'Home' : 'FindDevice'
-  const initialScreen = 'Home'
+  const initialScreen = 'test'
 
   return (
       <NavigationContainer>

@@ -11,8 +11,8 @@ export default function BtnComp(props) {
   return (
       <TouchableOpacity
           onPress={onPress}
-          className={`bg-blue-500 flex flex-row items-center rounded-lg ${classComp} ${fluid
-            ? 'w-full p-3' : 'py-1 px-2'}`}
+          className={`bg-blue-500 flex flex-row items-center rounded-lg ${fluid
+            ? 'w-full p-3' : 'py-1 px-2'} ${classComp}`}
       >
           {icon && <FontAwesome name={icon} size={16} color="white" />}
           <Text className={`text-white text-center font-bold ml-1  ${fluid ? 'w-full' : ''}`}>
