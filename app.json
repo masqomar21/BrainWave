@@ -18,10 +18,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.afkdev.brainwave"
     },
     "android": {
-     
       "icon": "./assets/icon.png",
       "SplashScreen": {
         "image": "./assets/SplashScreen.png",
@@ -37,6 +37,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "03be320e-1bc7-448c-8967-d2bbadee65b6"
+      }
     }
   }
 }

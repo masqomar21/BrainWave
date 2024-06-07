@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
-  View, Text, Button, Image, ScrollView
+  View, Text, Button, Image, ScrollView,
+  Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -53,9 +54,24 @@ export default function RecordHistory({ navigation }) {
   }
 
   const removeUser = async (index) => {
-    const newData = usersData.filter((item, idx) => idx !== index)
-    await AsyncStorage.setItem('users', JSON.stringify(newData))
-    setUsersData(newData)
+    Alert.alert(
+      'Hapus Data',
+      'Apakah anda yakin ingin menghapus data ini ?',
+      [
+        {
+          text: 'Ya',
+          onPress: async () => {
+            const newData = usersData.filter((item, idx) => idx !== index)
+            await AsyncStorage.setItem('users', JSON.stringify(newData))
+            setUsersData(newData)
+          }
+        },
+        {
+          text: 'Tidak'
+        }
+      ],
+      { cancelable: true }
+    )
   }
 
   const readUsersFromStorage = async () => {

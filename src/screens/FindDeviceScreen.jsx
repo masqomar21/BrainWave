@@ -120,7 +120,7 @@ export default function FindDeviceScreen({ navigation }) {
   const handleNavigarion = () => {
     Alert.alert(
       'Navigasi',
-      'Apakah anda yakin ingin kembali ke halaman utama?',
+      'Apakah anda yakin ingin membatalkan?',
       [
         {
           text: 'Ya',
@@ -143,7 +143,7 @@ export default function FindDeviceScreen({ navigation }) {
     setIsRecording(false)
     handleSendDataToDevice('0')
     storeData()
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}_${new Date().toDateString()}`, collectedData)
   }
 
   useFocusEffect(
@@ -172,6 +172,7 @@ export default function FindDeviceScreen({ navigation }) {
                   allDevice={allDevices}
                   closeModal={setIsModdalOpen}
                   connecTodDevice={connecTodDevice}
+                  navigation={navigation}
               />
 
               {connectedDevice ? (
