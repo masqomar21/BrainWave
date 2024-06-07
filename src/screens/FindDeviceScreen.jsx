@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 /* eslint-disable no-alert */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState } from 'react'
 import {
-  Image, Text, View, TouchableOpacity, ScrollView, Pressable,
+  Text, View, TouchableOpacity, ScrollView, Pressable,
   Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,44 +14,39 @@ import useFs from '../lib/fs'
 import useBLE from '../lib/useBle'
 import BtnComp from '../components/Button'
 import { CONSOLE } from '../lib/log'
+import ScanModal from '../components/ScanModal'
+import CircularLoading from '../components/CircularLoading'
 
 export default function FindDeviceScreen({ navigation }) {
   const recordData = useRef({})
   const [records, setRecords] = useState([])
-
-  // temporary data for testing
-  const [data, setData] = useState()
+  const [isModalOpen, setIsModdalOpen] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const {
     createAndWritefile, readFile
   } = useFs()
   const {
     connectedDevice,
-    isBluetoothEnabled,
     requestPermissions,
     scanForPeripherals,
     allDevices,
     connecTodDevice,
     disconnecTodDevice,
-    startStreamingData,
-    collectedData
+    collectedData,
+    writeData
   } = useBLE()
-  const [dataWave, setDataWave] = useState([])
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
   } = route.params
 
-  const handlePress = () => {
-    storeData()
-    const generateRandomNumbers = () => {
-      const randomNumbers = []
-      for (let i = 0; i < 100; i += 1) {
-        randomNumbers.push(Math.floor(Math.random() * 100))
-      }
-      return randomNumbers
+  const getRecoredDataStorage = async () => {
+    const recordsDataStorage = await AsyncStorage.getItem('records')
+
+    if (recordsDataStorage) {
+      setRecords(JSON.parse(recordsDataStorage))
     }
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, generateRandomNumbers())
   }
 
   const storeData = async () => {
@@ -73,57 +69,51 @@ export default function FindDeviceScreen({ navigation }) {
       AsyncStorage.setItem('records', JSON.stringify(updateDataRecords))
 
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log('error:', e)
+      CONSOLE.log('error:', e)
     }
-  }
-  const getRecoredDataStorage = async () => {
-    const recordsDataStorage = await AsyncStorage.getItem('records')
-
-    if (recordsDataStorage) {
-      setRecords(JSON.parse(recordsDataStorage))
-    }
-  }
-
-  const getRecordsDataFormFile = async () => {
-    const fileName = `recorde_${recordData.current.id}_${recordData.current.userId}`
-    setData(await readFile(fileName))
-    // cekFileLocation()
-    // const files = await getAllFiles()
-
   }
 
   const scanForDevices = async () => {
+    setIsModdalOpen(true)
     const isPermissionGranted = await requestPermissions()
     if (isPermissionGranted) {
       scanForPeripherals()
     }
   }
 
-  const handleConectDevice = async () => {
-    if (allDevices.length > 0) {
-      const device = allDevices[0]
-      connecTodDevice(device)
-      // startStreamingData(device)
-    }
+  const handleSendDataToDevice = async (data) => {
+    await writeData(data)
+
   }
 
-  const handleDone = async () => {
+  // const handleConectDevice = async () => {
+  //   if (allDevices.length > 0) {
+  //     const device = allDevices[0]
+  //     connecTodDevice(device)
+  //     // startStreamingData(device)
+  //   }
+  // }
 
-    storeData()
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
-    console.log(collectedData)
-    if (connectedDevice) {
-      await disconnecTodDevice()
-      scanForDevices()
-    }
-  }
+  // const handleDone = async () => {
+
+  //   storeData()
+  //   createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
+  //   // console.log(collectedData)
+  //   if (connectedDevice) {
+  //     await disconnecTodDevice()
+  //     scanForDevices()
+  //     setIsModdalOpen(true)
+  //   }
+
+  // }
 
   // CONSOLE.log('data', rawData)
 
   const handleDisconectDevice = async () => {
     if (connectedDevice) {
       await disconnecTodDevice()
+      scanForDevices()
+      setIsModdalOpen(true)
     }
   }
 
@@ -134,18 +124,33 @@ export default function FindDeviceScreen({ navigation }) {
       [
         {
           text: 'Ya',
-          onPress: () => navigation.navigate('Home')
+          onPress: () => {
+            handleDisconectDevice()
+            navigation.navigate('Home')
+          }
         }
       ],
       { cancelable: true }
     )
-    // navigation.navigate('Home')
+  }
+
+  const handelStratRecord = () => {
+    setIsRecording(true)
+    handleSendDataToDevice('1')
+  }
+
+  const handleStopRecord = () => {
+    setIsRecording(false)
+    handleSendDataToDevice('0')
+    storeData()
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
   }
 
   useFocusEffect(
     React.useCallback(() => {
       getRecoredDataStorage()
       scanForDevices()
+      !connectedDevice && setIsModdalOpen(true)
     }, [])
   )
 
@@ -161,27 +166,45 @@ export default function FindDeviceScreen({ navigation }) {
               <Text className="text-3xl font-bold text-center text-white">
                   BRAINWAVE
               </Text>
-              <Text>
-                  {JSON.stringify(allDevices.map((device) => device.name))}
-              </Text>
+              <ScanModal
+                  visible={isModalOpen}
+                  device={connectedDevice}
+                  allDevice={allDevices}
+                  closeModal={setIsModdalOpen}
+                  connecTodDevice={connecTodDevice}
+              />
 
-              <TouchableOpacity onPress={handlePress} className="bg-white p-5 mt-10 rounded-full aspect-square items-center">
-                  <Fontisto name="power" size={100} color="#0047AB" />
-              </TouchableOpacity>
+              {connectedDevice ? (
+                  <View className="flex justify-center items-center pt-20">
+                      {!isRecording ? (
+                          <TouchableOpacity
+                              onPress={handelStratRecord}
+                              className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
+                          >
+                              <Fontisto name="power" size={100} color="#0047AB" />
+                          </TouchableOpacity>
 
-              <Text className="text-2xl font-bold text-center text-white mt-10">
-                  Find Device
-              </Text>
+                      ) : (
+                          <>
+                              <CircularLoading radius={50} innerColor="#0047AB" done={false} />
 
-              <Pressable onPress={handleConectDevice} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
-                  <Text>sambungkan</Text>
-              </Pressable>
+                              <Text className="text-2xl font-bold text-center text-white mt-10">
+                                  Data Recive
+                              </Text>
+                              <Text className="text-2xl font-bold text-center text-white mt-10">
+                                  {collectedData[collectedData.length - 1]}
+                              </Text>
 
-              <Pressable onPress={handleDone} className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10">
-                  <Text>selesai</Text>
-              </Pressable>
+                              <BtnComp title="selesai" onPress={handleStopRecord} classComp="bg-green-400 mt-5 py-3 px-5" />
+                          </>
 
-              <BtnComp title="putuskan" onPress={() => disconnecTodDevice()} classComp="bg-green-400 mt-5" fluid />
+                      )}
+                  </View>
+              ) : (
+                  <Text className="text-2xl text-center font-bold p-5">
+                      Scanning for devices
+                  </Text>
+              )}
 
           </View>
       </SafeAreaView>

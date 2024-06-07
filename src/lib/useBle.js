@@ -129,6 +129,7 @@ export default function useBLE() {
         setErr(null)
         setALlDevices([])
         setRawData(null)
+        setCollectedData([])
       } catch (e) {
         CONSOLE.log('FAILED TO DISCONNECT', e)
         setErr(e)

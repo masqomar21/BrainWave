@@ -116,7 +116,8 @@ export default function NewRecordScreen({ navigation }) {
                       <View className="flex w-full gap-3 pt-6">
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className={`flex-1 ${sound === 'ombak' ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
+                                  className={`flex-1 ${sound === 'ombak'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -135,7 +136,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Ombak</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className={`flex-1 ${sound === 'hujan' ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
+                                  className={`flex-1 ${sound === 'hujan'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -156,7 +158,8 @@ export default function NewRecordScreen({ navigation }) {
                           </View>
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className={`flex-1 ${sound === 'Kicau_burung' ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
+                                  className={`flex-1 ${sound === 'Kicau_burung'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -175,7 +178,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Kicau Burung</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className={`flex-1 ${sound === 'api_unggun' ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
+                                  className={`flex-1 ${sound === 'api_unggun'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -200,13 +204,22 @@ export default function NewRecordScreen({ navigation }) {
                           <Text className="font-bold text-base">Frekuensi</Text>
                       </View>
                       <View className="flex w-full flex-row justify-around rounded-lg border border-gray-300">
-                          <TouchableOpacity className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(3)}>
+                          <TouchableOpacity
+                              className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(3)}
+                          >
                               <Text className="text-center text-base py-1">3 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(6)}>
+                          <TouchableOpacity
+                              className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(6)}
+                          >
                               <Text className="text-center text-base py-1">6 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`} onPress={() => handleFreq(9)}>
+                          <TouchableOpacity
+                              className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`}
+                              onPress={() => handleFreq(9)}
+                          >
                               <Text className="text-center text-base py-1">9 Hz</Text>
                           </TouchableOpacity>
                       </View>

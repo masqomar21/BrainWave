@@ -6,6 +6,7 @@
     "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "airbnb"],
     "plugins": ["react", "react-native", "react-hooks", "jsx-a11y"],
     "rules": {
+      // "max-len" : ["error", { "code": 120 } ],
       "no-duplicate-imports": "error",
       // "import/order": "error",
       // "import/no-unresolved": ["error", {"commonjs": true, "caseSensitive": true}],
