@@ -113,6 +113,7 @@ export default function useBLE() {
       CONSOLE.log('CONNECTED TO DEVICE', deviceConnection.id)
       // bleManager.startDeviceScan()
       bleManager.stopDeviceScan()
+      setCollectedData([])
       await startStreamingData(deviceConnection)
     } catch (e) {
       // setALlDevices([])
