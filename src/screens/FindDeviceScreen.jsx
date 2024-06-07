@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState } from 'react'
 import {
-  Image, Text, View, TouchableOpacity, ScrollView, Pressable,
+  Text, View, TouchableOpacity, ScrollView, Pressable,
   Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -15,11 +15,13 @@ import useBLE from '../lib/useBle'
 import BtnComp from '../components/Button'
 import { CONSOLE } from '../lib/log'
 import ScanModal from '../components/ScanModal'
+import CircularLoading from '../components/CircularLoading'
 
 export default function FindDeviceScreen({ navigation }) {
   const recordData = useRef({})
   const [records, setRecords] = useState([])
   const [isModalOpen, setIsModdalOpen] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const {
     createAndWritefile, readFile
@@ -31,13 +33,21 @@ export default function FindDeviceScreen({ navigation }) {
     allDevices,
     connecTodDevice,
     disconnecTodDevice,
-    collectedData
+    collectedData,
+    writeData
   } = useBLE()
-  // const [dataWave, setDataWave] = useState([])
   const route = useRoute()
   const {
     userId, sound, freq, volume, date
   } = route.params
+
+  const getRecoredDataStorage = async () => {
+    const recordsDataStorage = await AsyncStorage.getItem('records')
+
+    if (recordsDataStorage) {
+      setRecords(JSON.parse(recordsDataStorage))
+    }
+  }
 
   const storeData = async () => {
     try {
@@ -59,15 +69,7 @@ export default function FindDeviceScreen({ navigation }) {
       AsyncStorage.setItem('records', JSON.stringify(updateDataRecords))
 
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log('error:', e)
-    }
-  }
-  const getRecoredDataStorage = async () => {
-    const recordsDataStorage = await AsyncStorage.getItem('records')
-
-    if (recordsDataStorage) {
-      setRecords(JSON.parse(recordsDataStorage))
+      CONSOLE.log('error:', e)
     }
   }
 
@@ -79,26 +81,31 @@ export default function FindDeviceScreen({ navigation }) {
     }
   }
 
-  const handleConectDevice = async () => {
-    if (allDevices.length > 0) {
-      const device = allDevices[0]
-      connecTodDevice(device)
-      // startStreamingData(device)
-    }
-  }
-
-  const handleDone = async () => {
-
-    storeData()
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
-    // console.log(collectedData)
-    if (connectedDevice) {
-      await disconnecTodDevice()
-      scanForDevices()
-      setIsModdalOpen(true)
-    }
+  const handleSendDataToDevice = async (data) => {
+    await writeData(data)
 
   }
+
+  // const handleConectDevice = async () => {
+  //   if (allDevices.length > 0) {
+  //     const device = allDevices[0]
+  //     connecTodDevice(device)
+  //     // startStreamingData(device)
+  //   }
+  // }
+
+  // const handleDone = async () => {
+
+  //   storeData()
+  //   createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
+  //   // console.log(collectedData)
+  //   if (connectedDevice) {
+  //     await disconnecTodDevice()
+  //     scanForDevices()
+  //     setIsModdalOpen(true)
+  //   }
+
+  // }
 
   // CONSOLE.log('data', rawData)
 
@@ -118,14 +125,25 @@ export default function FindDeviceScreen({ navigation }) {
         {
           text: 'Ya',
           onPress: () => {
-            handleDone()
+            handleDisconectDevice()
             navigation.navigate('Home')
           }
         }
       ],
       { cancelable: true }
     )
-    // navigation.navigate('Home')
+  }
+
+  const handelStratRecord = () => {
+    setIsRecording(true)
+    handleSendDataToDevice('1')
+  }
+
+  const handleStopRecord = () => {
+    setIsRecording(false)
+    handleSendDataToDevice('0')
+    storeData()
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}`, collectedData)
   }
 
   useFocusEffect(
@@ -133,7 +151,6 @@ export default function FindDeviceScreen({ navigation }) {
       getRecoredDataStorage()
       scanForDevices()
       !connectedDevice && setIsModdalOpen(true)
-      // handleConectDevice()
     }, [])
   )
 
@@ -157,52 +174,32 @@ export default function FindDeviceScreen({ navigation }) {
                   connecTodDevice={connecTodDevice}
               />
 
-              {/* <TouchableOpacity
-                  onPress={() => CONSOLE.log('power')}
-                  className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
-              >
-                  <Fontisto name="power" size={100} color="#0047AB" />
-              </TouchableOpacity> */}
-
-              {/* <Text className="text-2xl font-bold text-center text-white mt-10">
-                  Find Device
-              </Text> */}
-
-              {/* <Pressable
-                  onPress={handleConectDevice}
-                  className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
-              >
-                  <Text>sambungkan</Text>
-              </Pressable> */}
-
-              {/* <Pressable
-                  onPress={handleDone}
-                  className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
-              >
-                  <Text>selesai</Text>
-              </Pressable>
-
-              <BtnComp title="putuskan" onPress={handleDisconectDevice} classComp="bg-green-400 mt-5" fluid /> */}
-
               {connectedDevice ? (
                   <View className="flex justify-center items-center pt-20">
-                      <TouchableOpacity
-                          onPress={() => CONSOLE.log('power')}
-                          className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
-                      >
-                          <Fontisto name="power" size={100} color="#0047AB" />
-                      </TouchableOpacity>
+                      {!isRecording ? (
+                          <TouchableOpacity
+                              onPress={handelStratRecord}
+                              className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
+                          >
+                              <Fontisto name="power" size={100} color="#0047AB" />
+                          </TouchableOpacity>
 
-                      <Pressable
-                          onPress={handleDone}
-                          className="rounded-3xl bg-white p-5 text-lg font-bold text-center text-[#0047AB] mt-10"
-                      >
-                          <Text>selesai</Text>
-                      </Pressable>
+                      ) : (
+                          <>
+                              <CircularLoading radius={50} innerColor="#0047AB" done={false} />
 
-                      <BtnComp title="putuskan" onPress={handleDisconectDevice} classComp="bg-green-400 mt-5" fluid />
+                              <Text className="text-2xl font-bold text-center text-white mt-10">
+                                  Data Recive
+                              </Text>
+                              <Text className="text-2xl font-bold text-center text-white mt-10">
+                                  {collectedData[collectedData.length - 1]}
+                              </Text>
+
+                              <BtnComp title="selesai" onPress={handleStopRecord} classComp="bg-green-400 mt-5 py-3 px-5" />
+                          </>
+
+                      )}
                   </View>
-
               ) : (
                   <Text className="text-2xl text-center font-bold p-5">
                       Scanning for devices

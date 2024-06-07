@@ -12,7 +12,6 @@ import BtnComp from '../components/Button'
 export default function TestScreen() {
   const [isRecording, setIsRecording] = useState(false)
   const [data, setData] = useState([])
-  const [logCount, setLogCount] = useState(0)
   const intervalRef = useRef(null)
 
   const handleRecord = () => {
@@ -23,13 +22,12 @@ export default function TestScreen() {
     if (isRecording) {
       intervalRef.current = setInterval(() => {
         const randomNumber = Math.floor(Math.random() * 100) + 1
-        console.log(`Recording random number: ${randomNumber}`)
         setData((prevData) => [...prevData, randomNumber])
       }, 10)
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current)
       intervalRef.current = null
-      console.log('Recording stopped')
+    //   console.log('Recording stopped')
     }
 
     return () => {
@@ -78,12 +76,6 @@ export default function TestScreen() {
                           </>
 
                       )}
-                      {/* <TouchableOpacity
-                          onPress={handleRecord}
-                          className="bg-white p-5 mt-10 rounded-full aspect-square items-center"
-                      >
-                          <Fontisto name="power" size={100} color="#0047AB" />
-                      </TouchableOpacity> */}
 
                       {/* {data.map((item, index) => (
                           <Text key={index}>{item}</Text>
@@ -97,12 +89,6 @@ export default function TestScreen() {
 
                       <BtnComp title="putuskan" onPress={() => CONSOLE.log('pustuskan')} classComp="bg-green-400 mt-5" fluid />
                   </View>
-
-                  {/* ) : (
-                      <Text className="text-2xl text-center font-bold p-5">
-                          Scanning for devices
-                      </Text>
-                  )} */}
 
               </View>
           </SafeAreaView>

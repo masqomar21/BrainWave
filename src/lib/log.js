@@ -1,19 +1,19 @@
 /* eslint-disable no-console */
 // eslint-disable-next-line import/prefer-default-export
 export const CONSOLE = {
-  log(message, ...args) {
-    console.log(message, args)
+  log(message, ...opsionalParams) {
+    console.log(message, ...opsionalParams)
   },
-  info(message, ...args) {
-    console.info(message, args)
+  info(message, ...opsionalParams) {
+    console.info(message, ...opsionalParams)
   },
-  warn(message, ...args) {
-    console.warn(message, args)
+  warn(message, ...opsionalParams) {
+    console.warn(message, ...opsionalParams)
   },
-  error(message, ...args) {
-    console.error(message, args)
+  error(message, ...opsionalParams) {
+    console.error(message, ...opsionalParams)
   },
-  table(message, ...args) {
-    console.table(message, args)
+  table(message, ...opsionalParams) {
+    console.table(message, ...opsionalParams)
   }
 }
