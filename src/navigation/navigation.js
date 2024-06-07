@@ -11,7 +11,8 @@ import AboutApp from '../screens/AboutApp'
 import Detail from '../screens/Detail'
 import FindDeviceScreen from '../screens/FindDeviceScreen'
 
-import useBLE from '../lib/useBle'
+// import useBLE from '../lib/useBle'
+import TestScreen from '../screens/test'
 
 const Stack = createNativeStackNavigator()
 
@@ -23,6 +24,7 @@ const screens = [
   { name: 'AboutApp', component: AboutApp },
   { name: 'Detail', component: Detail },
   { name: 'FindDevice', component: FindDeviceScreen }
+  // { name: 'test', component: TestScreen }
 ]
 
 export default function Navigation() {

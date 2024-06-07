@@ -1,6 +1,7 @@
+/* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react'
 import {
-  View, Text, ScrollView, Image, TouchableOpacity, TextInput
+  View, Text, ScrollView, Image, TouchableOpacity, TextInput, Alert
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRoute } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
+import useBLE from '../lib/useBle'
 
 const test = require('../../assets/test.png')
 const ombak = require('../../assets/images/ombak.png')
@@ -26,67 +28,53 @@ export default function NewRecordScreen({ navigation }) {
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
-  const [recordsData, setRecordsData] = useState([])
+
+  const { isBluetoothEnabled } = useBLE()
+  // const [recordsData, setRecordsData] = useState([])
 
   const handleSound = (soundType) => {
     setSound(soundType)
-    setFreq('')
+    // setFreq('')
   }
 
   const handleFreq = (freqType) => {
     setFreq(freqType)
-    setSound('')
+    // setSound('')
   }
 
-  const storeData = async () => {
-    try {
-      // Retrieve records data from AsyncStorage
-      const recordsStorage = await AsyncStorage.getItem('records')
-
-      // Check if recordsStorage is not empty
-      if (recordsStorage) {
-        setRecordsData(JSON.parse(recordsStorage))
-      }
-
-      let newId = 1
-
-      // If recordsData is not empty, get the last id and add 1
-      if (recordsData.length > 0) {
-        newId = recordsData[recordsData.length - 1].id + 1
-      }
-
-      // Create a new record object
-      const newRecords = {
-        id: newId,
+  const handleNavigate = async () => {
+    const isActive = await isBluetoothEnabled()
+    if (isActive === 'PoweredOn') {
+      // eslint-disable-next-line no-mixed-operators
+      // if (sound === '' && freq === 0 || volume === 0) {
+      //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      // } else {
+      navigation.navigate('FindDevice', {
         userId: id,
         sound,
         freq,
         volume,
-        filePath: ''
-      }
-
-      // Add the new record to recordsData
-      recordsData.push(newRecords)
-
-      // Save updated recordsData to AsyncStorage
-      await AsyncStorage.setItem('records', JSON.stringify(recordsData))
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
+        date: new Date().toDateString()
+      })
+      // }
+    } else {
+      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
     }
   }
+
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
+
               <View className="flex-1 px-5">
-                  <Text className="text-center text-base font-bold">
+                  {/* <Text className="text-center text-base font-bold">
                       { sound !== '' ? sound : 'Pilih Suara'}
                       {' '}
                       { freq !== 0 ? `(${freq} Hz)` : ''}
                       {' '}
                       { volume !== 0 ? `(${volume} %)` : ''}
-                  </Text>
+                  </Text> */}
 
                   <View
                       className="w-full rounded-xl p-5 bg-white"
@@ -128,7 +116,8 @@ export default function NewRecordScreen({ navigation }) {
                       <View className="flex w-full gap-3 pt-6">
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'ombak'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -147,7 +136,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Ombak</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'hujan'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -168,7 +158,8 @@ export default function NewRecordScreen({ navigation }) {
                           </View>
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'Kicau_burung'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -187,7 +178,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Kicau Burung</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'api_unggun'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -212,13 +204,22 @@ export default function NewRecordScreen({ navigation }) {
                           <Text className="font-bold text-base">Frekuensi</Text>
                       </View>
                       <View className="flex w-full flex-row justify-around rounded-lg border border-gray-300">
-                          <TouchableOpacity className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(3)}>
+                          <TouchableOpacity
+                              className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(3)}
+                          >
                               <Text className="text-center text-base py-1">3 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(6)}>
+                          <TouchableOpacity
+                              className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(6)}
+                          >
                               <Text className="text-center text-base py-1">6 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`} onPress={() => handleFreq(9)}>
+                          <TouchableOpacity
+                              className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`}
+                              onPress={() => handleFreq(9)}
+                          >
                               <Text className="text-center text-base py-1">9 Hz</Text>
                           </TouchableOpacity>
                       </View>
@@ -244,7 +245,7 @@ export default function NewRecordScreen({ navigation }) {
                               minimumTrackTintColor="#2549A6"
                           />
                       </View>
-                      <BtnComp title="Dengarkan" onPress={() => storeData()} classComp="bg-green-400 mt-5" fluid />
+                      <BtnComp title="Dengarkan" onPress={() => handleNavigate()} classComp="bg-green-400 mt-5" fluid />
                   </View>
               </View>
           </ScrollView>

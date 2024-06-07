@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable consistent-return */
 import { useMemo, useState } from 'react'
 // eslint-disable-next-line react-native/split-platform-components
@@ -11,6 +12,7 @@ import { CONSOLE } from './log'
 
 const SERVICE_UUID = process.env.SERVICE_UUID ?? 'de1bf7ab-1ca8-40a3-b797-6221c2acb33d'
 const CHARACTERISTIC_UUID = process.env.CHARACTERISTIC_UUID ?? '3559f95b-3857-43f1-a7e0-cc0ab0542afc'
+const TARGET_DEVICE_NAME = process.env.TARGET_DEVICE_NAME ?? 'ESP32_BLE'
 
 export default function useBLE() {
   const bleManager = useMemo(() => new BleManager(), [])
@@ -18,11 +20,12 @@ export default function useBLE() {
   const [allDevices, setALlDevices] = useState([])
   const [connectedDevice, setConnectedDevice] = useState(null)
   const [rawData, setRawData] = useState(null)
+  const [collectedData, setCollectedData] = useState([])
   const [err, setErr] = useState(null)
 
   const isBluetoothEnabled = async function () {
     // console.log(await bleManager.state())
-    return bleManager.state()
+    return await bleManager.state()
   }
 
   const requestAndroid31Permissions = async function () {
@@ -78,19 +81,22 @@ export default function useBLE() {
   }
 
   const isDuplicated = function (devices, nextDevice) {
-    devices.findIndex((device) => nextDevice.id === device.id) > -1
+    return devices.findIndex((device) => nextDevice.id === device.id) > -1
   }
 
   const scanForPeripherals = function () {
+    // setALlDevices([])
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         CONSOLE.log(error)
         setErr(error)
+        return
       }
-      if (device) {
-        CONSOLE.log('defice found', device.name)
+      if (device && device.name?.includes(TARGET_DEVICE_NAME)) {
+        // CONSOLE.log('defice found', device.name)
         setALlDevices((prevState) => {
           if (!isDuplicated(prevState, device)) {
+
             return [...prevState, device]
           }
           return prevState
@@ -104,22 +110,27 @@ export default function useBLE() {
       const deviceConnection = await bleManager.connectToDevice(device.id)
       setConnectedDevice(deviceConnection)
       await deviceConnection.discoverAllServicesAndCharacteristics()
-      bleManager.startDeviceScan()
-      startStreamingData(deviceConnection)
+      CONSOLE.log('CONNECTED TO DEVICE', deviceConnection.id)
+      // bleManager.startDeviceScan()
+      bleManager.stopDeviceScan()
+      setCollectedData([])
+      await startStreamingData(deviceConnection)
     } catch (e) {
-      setALlDevices([])
+      // setALlDevices([])
       setErr(e)
       CONSOLE.log('FAILED TO CONNECT', e)
+      await connecTodDevice(device)
     }
   }
 
   const disconnecTodDevice = async function () {
     if (connectedDevice) {
       try {
-        bleManager.cancelDeviceConnection(connectedDevice.id)
+        await bleManager.cancelDeviceConnection(connectedDevice.id)
         setErr(null)
         setALlDevices([])
         setRawData(null)
+        setCollectedData([])
       } catch (e) {
         CONSOLE.log('FAILED TO DISCONNECT', e)
         setErr(e)
@@ -128,18 +139,22 @@ export default function useBLE() {
   }
 
   const readData = function (error, Characteristic) {
+    // CONSOLE.log('readData Called')
     if (error) {
       CONSOLE.log(error)
       setErr(error)
-      return -1
-    } if (!Characteristic?.value) {
-      CONSOLE.log('no data')
-      return -1
+      return
+    }
+    if (!Characteristic?.value) {
+      CONSOLE.log('No data received')
+      return
     }
 
     const rawDataEncoded = base64.decode(Characteristic.value)
-    CONSOLE.log(rawDataEncoded)
-    setRawData(rawDataEncoded)
+    // CONSOLE.log(rawDataEncoded)
+    setRawData(parseInt(rawDataEncoded, 10))
+    CONSOLE.log('data wave', collectedData)
+    setCollectedData((prevState) => [...prevState, parseInt(rawDataEncoded, 10)])
   }
 
   const writeData = async function (data) {
@@ -159,15 +174,23 @@ export default function useBLE() {
   }
 
   const startStreamingData = async function (device) {
-    if (device) {
-      device.monitorCharacteristicForService(
+    try {
+      await device.monitorCharacteristicForService(
         SERVICE_UUID,
         CHARACTERISTIC_UUID,
         readData
       )
-    } else {
-      CONSOLE.log('device not found')
+    } catch (e) {
+      CONSOLE.log(e)
+      setErr(e)
     }
+    // device.monitorCharacteristicForService(
+    //   SERVICE_UUID,
+    //   CHARACTERISTIC_UUID,
+    //   (error, characteristic) => readData(error, characteristic)
+    // ).then(
+    //   CONSOLE.log('monitoring')
+    // )
   }
 
   return {
@@ -179,6 +202,7 @@ export default function useBLE() {
     connectedDevice,
     disconnecTodDevice,
     rawData,
+    collectedData,
     writeData,
     err
   }

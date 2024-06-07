@@ -1,39 +1,55 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import {
   ScrollView, Text, TextInput, View, Dimensions
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRoute } from '@react-navigation/native'
-// import { LineChart } from 'react-native-chart-kit'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
 
+import ChartData from '../components/chartData'
+
 export default function Detail({ navigation }) {
-  const screenWidth = Dimensions.get('window').width
   const [records, setRecordsData] = useState([])
   const route = useRoute()
   const {
     id, name, age, gender
   } = route.params
 
-  const data = {
-    // labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43, 50, 20, 45, 28, 80]
-      }
-    ]
-  }
-
   const readRecordsFromStorage = async () => {
     const items = await AsyncStorage.getItem('records')
-    setRecordsData(JSON.parse(items))
+    const dataRecord = items ? JSON.parse(items) : []
+    setRecordsData(dataRecord.filter((item) => item.userId === id))
   }
 
-  useEffect(() => {
-    readRecordsFromStorage()
-  }, [route])
+  useFocusEffect(
+    React.useCallback(() => {
+      readRecordsFromStorage()
+    }, [])
+  )
+
+  const mapFunction = () => {
+    if (records) {
+      return records.map((item, index) => (
+          <React.Fragment key={index}>
+              <Text>
+                  {index + 1}
+                  {'. remakaman pada '}
+                  {item.date}
+                  {' dengan '}
+                  {item.sound ? `suara ${item.sound}` : `frekuensi ${item.freq}` }
+                  {' dan volume '}
+                  {item.volume}
+              </Text>
+              <ChartData userId={id} recordId={item.id} />
+          </React.Fragment>
+      ))
+    }
+    return <Text>Belum ada rekaman</Text>
+  }
 
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
@@ -53,8 +69,6 @@ export default function Detail({ navigation }) {
                         elevation: 5
                       }}
                   >
-
-                      <Text className="font-bold text-base mt-3">{JSON.stringify(records)}</Text>
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
                           value={name}
@@ -75,7 +89,7 @@ export default function Detail({ navigation }) {
                       <TextInput
                           className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-300/60"
                           value={gender}
-                          placeholder="Umur"
+                          placeholder="jenis kelamin"
                           editable={false}
                           selectTextOnFocus={false}
                       />
@@ -94,28 +108,8 @@ export default function Detail({ navigation }) {
                           fluid
                       />
                       <View className="mt-5 flex relative">
-
-                          {/* <LineChart
-                              data={data}
-                              width={screenWidth - 80}
-                              height={200}
-                              xAxisLabel="s"
-                              chartConfig={{
-                                backgroundGradientFrom: '#f0f0f0',
-                                backgroundGradientTo: '#d3d2dd',
-                                decimalPlaces: 0,
-                                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                                style: {
-                                  borderRadius: 16
-                                }
-                              }}
-                              bezier
-                              style={{
-                                marginVertical: 8,
-                                borderRadius: 16
-                              }}
-                          /> */}
+                          <Text className="font-bold text-base">grafik</Text>
+                          {mapFunction()}
                       </View>
                   </View>
               </View>

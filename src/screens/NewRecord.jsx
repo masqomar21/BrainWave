@@ -1,94 +1,112 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable no-alert */
+import React, { useEffect, useRef, useState } from 'react'
 import {
-  View, Text, ScrollView, Image, TouchableOpacity, TextInput
+  View, Text, ScrollView, Image, TouchableOpacity, TextInput,
+  Alert
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@candlefinance/slider'
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
+import useBLE from '../lib/useBle'
 
-const test = require('../../assets/test.png')
 const ombak = require('../../assets/images/ombak.png')
 const hujan = require('../../assets/images/hujan.png')
 const burung = require('../../assets/images/burung.png')
 const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
+  const user = useRef()
   const [nama, setNama] = useState('nama')
   const [umur, setUmur] = useState('')
-  const [kelamin, setKelamin] = useState(0)
+  const [kelamin, setKelamin] = useState('')
   const kelaminData = ['Laki-laki', 'Perempuan']
   const [sound, setSound] = useState('')
   const [freq, setFreq] = useState(0)
   const [volume, setVolume] = useState(20)
   const [usersData, setUsersData] = useState([])
 
+  const { isBluetoothEnabled } = useBLE()
+
   const handleSound = (soundType) => {
+    // setFreq(0)
     setSound(soundType)
   }
 
   const handleFreq = (freqType) => {
+    // setSound('')
     setFreq(freqType)
+  }
+
+  const handleNavigate = async () => {
+    const isActive = await isBluetoothEnabled()
+    if (isActive === 'PoweredOn') {
+      // eslint-disable-next-line no-mixed-operators
+      // if (sound === '' && freq === 0 || volume === 0) {
+      //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      // } else {
+      navigation.navigate('FindDevice', {
+        userId: user.current,
+        sound,
+        freq,
+        volume,
+        date: new Date().toDateString()
+      })
+      // }
+    } else {
+      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
+    }
   }
 
   const storeData = async () => {
     try {
-      // Retrieve users data from AsyncStorage
-      const usersStorage = await AsyncStorage.getItem('users')
-
-      // Check if usersStorage is not empty
-      if (usersStorage) {
-        setUsersData(JSON.parse(usersStorage))
-      }
-
       let newId = 1
-
-      // If usersData is not empty, get the last id and add 1
       if (usersData.length > 0) {
         newId = usersData[usersData.length - 1].id + 1
       }
-
-      // Create a new user object
       const newUser = {
         id: newId,
         name: nama,
         age: umur,
         gender: kelamin
       }
-
-      // Add the new user to usersData
-      usersData.push(newUser)
-
-      // Save updated usersData to AsyncStorage
-      await AsyncStorage.setItem('users', JSON.stringify(usersData))
+      user.current = newUser.id
+      const updatedUsersData = [...usersData, newUser]
+      console.log(updatedUsersData)
+      await AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
+      setUsersData(updatedUsersData)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }
+    setNama('')
+    setUmur('')
+    setKelamin(0)
+    handleNavigate()
   }
+
+  const getData = async () => {
+    const usersStorage = await AsyncStorage.getItem('users')
+    if (usersStorage) {
+      setUsersData(JSON.parse(usersStorage))
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData()
+    }, [])
+  )
+
   return (
       <SafeAreaView className="flex-1 bg-gray-200">
           <HeaderWithBack title="Buat Rekaman baru" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
               <View className="flex-1 px-5">
-                  <Text className="text-center text-base font-bold">
-                      { nama !== '' ? nama : ''}
-                      {', '}
-                      { umur !== 0 ? `(Umur: ${umur})` : ''}
-                      {', '}
-                      { kelamin !== 0 ? `(Kelamin: ${kelamin})` : ''}
-                  </Text>
-                  <Text className="text-center text-base font-bold">
-                      { sound !== '' ? sound : 'Pilih Suara'}
-                      {' '}
-                      { freq !== 0 ? `(${freq} Hz)` : ''}
-                      {' '}
-                      { volume !== 0 ? `(${volume} %)` : ''}
-                  </Text>
-
                   <View
                       className="w-full rounded-xl p-5 bg-white"
                       style={{
@@ -122,11 +140,23 @@ export default function NewRecordScreen({ navigation }) {
                           defaultButtonText="Jenis Kelamin"
                           dropdownStyle={{ backgroundColor: 'white', borderBottomColor: 'gray', borderBottomWidth: 1 }}
                           buttonStyle={{
-                            width: '100%', height: 50, borderRadius: 8, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, marginTop: 10
+                            width: '100%',
+                            height: 50,
+                            borderRadius: 8,
+                            backgroundColor: 'white',
+                            borderColor: 'gray',
+                            borderWidth: 1,
+                            marginTop: 10
                           }}
                           buttonTextStyle={{ textAlign: 'left', fontSize: 18, color: '#444' }}
                           renderDropdownIcon={(isOpened) => {
-                            return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color="#444" size={18} />
+                            return (
+                                <FontAwesome
+                                    name={isOpened ? 'chevron-up' : 'chevron-down'}
+                                    color="#444"
+                                    size={18}
+                                />
+                            )
                           }}
                           data={kelaminData}
                           onSelect={(selectedItem, index) => {
@@ -144,7 +174,8 @@ export default function NewRecordScreen({ navigation }) {
                       <View className="flex w-full gap-3 pt-6">
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'ombak'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -163,7 +194,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Ombak</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'hujan'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -184,7 +216,8 @@ export default function NewRecordScreen({ navigation }) {
                           </View>
                           <View className="flex w-full flex-row">
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg mr-3 p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'Kicau_burung'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg mr-3 p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -203,7 +236,8 @@ export default function NewRecordScreen({ navigation }) {
                                   <Text className=" font-bold text-center text-base">Kicau Burung</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                  className="flex-1 bg-white rounded-lg p-3 border border-gray-200"
+                                  className={`flex-1 ${sound === 'api_unggun'
+                                    ? 'bg-blue-500' : 'bg-white'} rounded-lg p-3 border border-gray-200`}
                                   style={{
                                     shadowColor: '#000000',
                                     shadowOffset: {
@@ -228,13 +262,22 @@ export default function NewRecordScreen({ navigation }) {
                           <Text className="font-bold text-base">Frekuensi</Text>
                       </View>
                       <View className="flex w-full flex-row justify-around rounded-lg border border-gray-300">
-                          <TouchableOpacity className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(3)}>
+                          <TouchableOpacity
+                              className={`${freq === 3 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(3)}
+                          >
                               <Text className="text-center text-base py-1">3 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`} onPress={() => handleFreq(6)}>
+                          <TouchableOpacity
+                              className={`${freq === 6 ? 'bg-blue-500' : ''} flex-1 border-r border-gray-300`}
+                              onPress={() => handleFreq(6)}
+                          >
                               <Text className="text-center text-base py-1">6 Hz</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`} onPress={() => handleFreq(9)}>
+                          <TouchableOpacity
+                              className={`${freq === 9 ? 'bg-blue-500' : ''} flex-1 border-gray-300`}
+                              onPress={() => handleFreq(9)}
+                          >
                               <Text className="text-center text-base py-1">9 Hz</Text>
                           </TouchableOpacity>
                       </View>
