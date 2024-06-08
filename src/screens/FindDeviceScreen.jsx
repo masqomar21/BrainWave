@@ -143,7 +143,7 @@ export default function FindDeviceScreen({ navigation }) {
     setIsRecording(false)
     handleSendDataToDevice('0')
     storeData()
-    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}_${new Date().toDateString()}`, collectedData)
+    createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}_${recordData.current.date}`, collectedData)
   }
 
   useFocusEffect(
