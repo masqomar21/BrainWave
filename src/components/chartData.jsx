@@ -5,11 +5,11 @@ import { LineChart } from 'react-native-chart-kit'
 import useFs from '../lib/fs'
 
 export default function ChartData(props) {
-  const { userId, recordId } = props
+  const { userId, recordId, date } = props
   const [chartData, setChartData] = useState([])
   const { readFile } = useFs()
   const getRecordsDataFormFile = async () => {
-    const fileName = `recorde_${recordId}_${userId}`
+    const fileName = `recorde_${recordId}_${userId}_${date}`
     setChartData(await readFile(fileName))
   }
 

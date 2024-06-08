@@ -1,5 +1,6 @@
 import {
-  View, Text, Modal, SafeAreaView
+  View, Text, Modal, SafeAreaView,
+  Alert
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import CircularLoading from './CircularLoading'
@@ -7,7 +8,7 @@ import BtnComp from './Button'
 
 export default function ScanModal(props) {
   const {
-    visible, device, allDevice, closeModal, connecTodDevice
+    visible, device, allDevice, closeModal, connecTodDevice, navigation
   } = props
   const [isSpinning, setIsSpinnig] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -19,6 +20,22 @@ export default function ScanModal(props) {
       await connecTodDevice(allDevice[0])
       // startStreamingData(device)
     }
+  }
+
+  const handleNavigation = () => {
+    Alert.alert(
+      'Navigasi',
+      'Apakah anda yakin ingin membatalkan ?',
+      [
+        {
+          text: 'Ya',
+          onPress: () => {
+            navigation.navigate('RecordHistory')
+          }
+        }
+      ],
+      { cancelable: true }
+    )
   }
 
   useEffect(() => {
@@ -46,6 +63,7 @@ export default function ScanModal(props) {
                       <BtnComp title={!isLoading ? 'Conect to Device' : 'Connecting...'} onPress={handleConectDevice} fluid />
                   </>
                   )}
+                  <BtnComp title="Batal" onPress={handleNavigation} classComp="bg-red-400 mt-5 py-3 px-5" fluid />
               </View>
           </SafeAreaView>
 

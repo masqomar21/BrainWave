@@ -44,7 +44,7 @@ export default function Detail({ navigation }) {
                   {' dan volume '}
                   {item.volume}
               </Text>
-              <ChartData userId={id} recordId={item.id} />
+              <ChartData userId={id} recordId={item.id} date={item.date} />
           </React.Fragment>
       ))
     }

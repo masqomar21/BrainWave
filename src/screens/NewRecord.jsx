@@ -13,6 +13,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import HeaderWithBack from '../components/HeaderWithBack'
 import BtnComp from '../components/Button'
 import useBLE from '../lib/useBle'
+import { CONSOLE } from '../lib/log'
 
 const ombak = require('../../assets/images/ombak.png')
 const hujan = require('../../assets/images/hujan.png')
@@ -21,7 +22,7 @@ const api = require('../../assets/images/api.png')
 
 export default function NewRecordScreen({ navigation }) {
   const user = useRef()
-  const [nama, setNama] = useState('nama')
+  const [nama, setNama] = useState('')
   const [umur, setUmur] = useState('')
   const [kelamin, setKelamin] = useState('')
   const kelaminData = ['Laki-laki', 'Perempuan']
@@ -33,60 +34,63 @@ export default function NewRecordScreen({ navigation }) {
   const { isBluetoothEnabled } = useBLE()
 
   const handleSound = (soundType) => {
-    // setFreq(0)
     setSound(soundType)
   }
 
   const handleFreq = (freqType) => {
-    // setSound('')
     setFreq(freqType)
   }
 
   const handleNavigate = async () => {
-    const isActive = await isBluetoothEnabled()
-    if (isActive === 'PoweredOn') {
-      // eslint-disable-next-line no-mixed-operators
-      // if (sound === '' && freq === 0 || volume === 0) {
-      //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
-      // } else {
-      navigation.navigate('FindDevice', {
-        userId: user.current,
-        sound,
-        freq,
-        volume,
-        date: new Date().toDateString()
-      })
-      // }
-    } else {
-      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
-    }
+    // eslint-disable-next-line no-mixed-operators
+    // if (sound === '' && freq === 0 ||  === 0) {
+    //   Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+    // } else {
+    navigation.navigate('FindDevice', {
+      userId: user.current,
+      sound,
+      freq,
+      volume,
+      date: new Date().toDateString()
+    })
   }
 
   const storeData = async () => {
-    try {
-      let newId = 1
-      if (usersData.length > 0) {
-        newId = usersData[usersData.length - 1].id + 1
+    const isActive = await isBluetoothEnabled()
+    if (isActive === 'PoweredOn') {
+      if (nama === '' || umur === '' || kelamin === '') {
+        Alert.alert('Data Tidak ada', 'Tolong lengkapi data yang di butuhkan !')
+      } else {
+
+        try {
+          let newId = 1
+          if (usersData.length > 0) {
+            newId = usersData[usersData.length - 1].id + 1
+          }
+          const newUser = {
+            id: newId,
+            name: nama,
+            age: umur,
+            gender: kelamin
+          }
+          user.current = newUser.id
+          const updatedUsersData = [...usersData, newUser]
+          CONSOLE.log(updatedUsersData)
+          await AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
+          setUsersData(updatedUsersData)
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          CONSOLE.log(error)
+        }
+        setNama('')
+        setUmur('')
+        setKelamin(0)
+        handleNavigate()
       }
-      const newUser = {
-        id: newId,
-        name: nama,
-        age: umur,
-        gender: kelamin
-      }
-      user.current = newUser.id
-      const updatedUsersData = [...usersData, newUser]
-      console.log(updatedUsersData)
-      await AsyncStorage.setItem('users', JSON.stringify(updatedUsersData))
-      setUsersData(updatedUsersData)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
+    } else {
+      Alert.alert('Bluetooth Mati', 'Tolong Hidupkan Bluetooth !')
     }
-    setNama('')
-    setUmur('')
-    setKelamin(0)
-    handleNavigate()
+
   }
 
   const getData = async () => {
