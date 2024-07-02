@@ -5,11 +5,9 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BtnComp from '../components/Button'
 import HeaderWithBack from '../components/HeaderWithBack'
-
 import ChartData from '../components/chartData'
 
 export default function Detail({ navigation }) {
@@ -35,9 +33,9 @@ export default function Detail({ navigation }) {
     if (records) {
       return records.map((item, index) => (
           <React.Fragment key={index}>
-              <Text>
+              <Text className="pt-3">
                   {index + 1}
-                  {'. remakaman pada '}
+                  {'. Rekaman pada '}
                   {item.date}
                   {' dengan '}
                   {item.sound ? `suara ${item.sound}` : `frekuensi ${item.freq}` }
@@ -108,7 +106,7 @@ export default function Detail({ navigation }) {
                           fluid
                       />
                       <View className="mt-5 flex relative">
-                          <Text className="font-bold text-base">grafik</Text>
+                          <Text className="font-bold text-base">Grafik</Text>
                           {mapFunction()}
                       </View>
                   </View>
