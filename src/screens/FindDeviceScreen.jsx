@@ -133,15 +133,18 @@ export default function FindDeviceScreen({ navigation }) {
       { cancelable: true }
     )
   }
+  const dataSent = { sound, freq, volume }
 
   const handelStratRecord = () => {
     setIsRecording(true)
-    handleSendDataToDevice('1')
+    handleSendDataToDevice({ paly: 1, ...dataSent })
   }
 
   const handleStopRecord = () => {
     setIsRecording(false)
-    handleSendDataToDevice('0')
+    handleSendDataToDevice({
+      paly: 0, sound: 0, freq: 0, volume: 0
+    })
     storeData()
     createAndWritefile(`recorde_${recordData.current.id}_${recordData.current.userId}_${recordData.current.date}`, collectedData)
   }
