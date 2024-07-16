@@ -54,6 +54,7 @@ export default function Detail({ navigation }) {
           <HeaderWithBack title="Detail Rekaman" navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
               <View className="flex-1 px-5">
+                  <Text className="font-bold text-base mt-3">Nama</Text>
                   <View
                       className="w-full rounded-xl p-5 bg-white"
                       style={{
