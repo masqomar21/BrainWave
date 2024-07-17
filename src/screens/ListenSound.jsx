@@ -31,7 +31,7 @@ export default function NewRecordScreen({ navigation }) {
 
 	const [sound, setSound] = useState('')
 	const [freq, setFreq] = useState(0)
-	const [volume, setVolume] = useState(15)
+	const [volume, setVolume] = useState(25)
 
 	const { isBluetoothEnabled } = useBLE()
 	// const [recordsData, setRecordsData] = useState([])
@@ -260,7 +260,7 @@ export default function NewRecordScreen({ navigation }) {
 								className=''
 								value={volume}
 								disabled={false}
-								min={1}
+								min={20}
 								max={30}
 								onChange={(value) => {
 									setVolume(value)
