@@ -137,25 +137,25 @@ export default function FindDeviceScreen({ navigation }) {
 	// const dataSent = { sound, freq, volume }
 
 	const mapingData = [
-		{ sound: '', freq: 3, data: 1 },
-		{ sound: '', freq: 6, data: 2 },
-		{ sound: '', freq: 9, data: 3 },
-		{ sound: 'hujan', freq: 0, data: 4 },
-		{ sound: 'ombak', freq: 0, data: 5 },
-		{ sound: 'Kicau_burung', freq: 0, data: 6 },
-		{ sound: 'api_unggun', freq: 0, data: 7 },
-		{ sound: 'hujan', freq: 3, data: 8 },
-		{ sound: 'hujan', freq: 6, data: 9 },
-		{ sound: 'hujan', freq: 9, data: 10 },
-		{ sound: 'ombak', freq: 3, data: 11 },
-		{ sound: 'ombak', freq: 6, data: 12 },
-		{ sound: 'ombak', freq: 9, data: 13 },
-		{ sound: 'Kicau_burung', freq: 3, data: 14 },
-		{ sound: 'Kicau_burung', freq: 6, data: 15 },
-		{ sound: 'Kicau_burung', freq: 9, data: 16 },
-		{ sound: 'api_unggun', freq: 3, data: 17 },
-		{ sound: 'api_unggun', freq: 6, data: 18 },
-		{ sound: 'api_unggun', freq: 9, data: 19 }
+		{ sound: '', freq: 3, data: 12 },
+		{ sound: '', freq: 6, data: 13 },
+		{ sound: '', freq: 9, data: 14 },
+		{ sound: 'hujan', freq: 0, data: 15 },
+		{ sound: 'ombak', freq: 0, data: 16 },
+		{ sound: 'Kicau_burung', freq: 0, data: 17 },
+		{ sound: 'api_unggun', freq: 0, data: 18 },
+		{ sound: 'hujan', freq: 3, data: 19 },
+		{ sound: 'hujan', freq: 6, data: 1 },
+		{ sound: 'hujan', freq: 9, data: 2 },
+		{ sound: 'ombak', freq: 3, data: 3 },
+		{ sound: 'ombak', freq: 6, data: 4 },
+		{ sound: 'ombak', freq: 9, data: 5 },
+		{ sound: 'Kicau_burung', freq: 3, data: 6 },
+		{ sound: 'Kicau_burung', freq: 6, data: 7 },
+		{ sound: 'Kicau_burung', freq: 9, data: 8 },
+		{ sound: 'api_unggun', freq: 3, data: 9 },
+		{ sound: 'api_unggun', freq: 6, data: 10 },
+		{ sound: 'api_unggun', freq: 9, data: 11 }
 	]
 
 	const musicPlay = mapingData.find(
